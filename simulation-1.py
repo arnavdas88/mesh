@@ -23,12 +23,23 @@ def main():
     alice.put_data({"weather": "sunny"})
     alice.put_data({"date": "today"})
     bob.put_data({"mount": "everest"})
-    bob.pop_data("mount")
-    # charlie.put_data({"date": "yesterday"})
-    
-    # alice.get_data("")
-    # dan.get_data("")
-    
+
+    assert bob.pop_data("mount") == "everest"
+    assert ema.get_data("mount") == None
+
+    charlie.put_data({"date": "yesterday"})
+    assert dan.get_data("date") == "yesterday"
+
+    assert hannah.get_data("date") == None
+    connect_all([bob, gorge])
+    connect_all([ema, igris])
+
+    gorge.sync_up() # Initiate a syncup routine
+
+    assert igris.get_data("date") == "yesterday"
+    assert hannah.pop_data("weather") == "sunny"
+    assert igris.get_data("weather") == None
+
 
     pass
 

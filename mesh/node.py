@@ -1,10 +1,11 @@
-from .utils import is_A_greater_than_B, A_minus_B
+from .utils import is_A_greater_than_B, A_minus_B, analyze_commit_diff
+from .monotonic_dict import MonotonicDict
 
 class Node:
     def __init__(self, name = None, connected_to: list | None = None):
         self.name = name
         self.connections = connected_to if connected_to else []
-        self.data = {}
+        self.data = MonotonicDict()
 
     def __call__(self, *args, **kwds):
         pass
@@ -38,25 +39,23 @@ class Node:
     # Data functions
     def put_data(self, key_value_pairs):
         for key, value in key_value_pairs.items():
-            if key not in self.data:
-                self.data[key] = value
-            else:
-                raise NotImplementedError()
+            self.data[key] = value
 
         self.sync_up()
 
-    def get_data(self, key):
+    def get_data(self, key, default = None):
         self.sync_up()
 
-        return self.data.get(key)
+        return self.data.get(key, default)
 
-    def pop_data(self, key):
+    def pop_data(self, key, default = None):
         if key in self.data:
             _value = self.data.pop(key)
             self.sync_up() # BUG: This will re-populate the key in the data, as a form of self healing
             return _value
 
-        raise NotImplementedError()
+        # raise NotImplementedError()
+        return default
 
     def sync_up(self, nodes_list = None):
         if not nodes_list:
@@ -65,25 +64,28 @@ class Node:
         for node in nodes_list:
             self.send(node, self.data)
     
-    def sync_up_recv(self, sender, incoming_data):
-        my_data = list(self.data.keys())
-        in_data = list(incoming_data.keys())
+    def sync_up_recv(self, sender, incoming_data:MonotonicDict):
+        analysis = analyze_commit_diff(incoming_data, self.data)
 
-        if my_data == in_data:
+        if analysis.status == "same":
             # The the data is equivalent
             return
 
-        P = self.connections.copy() # List of nodes to propagate the data to...        
+        P = self.connections.copy() # List of nodes to propagate the data to...
         # P.remove(self) # No need to rebroadcast to self
         P.remove(sender) # No need to rebroadcast to the sender node
 
-        if diff := dict(A_minus_B( incoming_data, self.data )):
-            # Incoming data has updates
-            self.data.update(diff)
 
-        if dict(A_minus_B( self.data, incoming_data )):
-            # The the data is equivalent
+        if analysis.status == 'ahead':
+            # Incoming data has updates
+            self.data._commit_keys = incoming_data._commit_keys
+            self.data._commit_values = incoming_data._commit_values
+        elif analysis.status == 'behind':
+            # Sender has outdated data
             P.append(sender)
+        else:
+            # Incoming is divergent with the current data
+            raise Exception(analysis.message)
 
         self.sync_up(P)
 
