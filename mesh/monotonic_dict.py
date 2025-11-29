@@ -153,7 +153,7 @@ class MonotonicDict(MutableMapping):
     def last_commit(self, ) -> str:
         '''Get the last commit
         '''
-        return self._commit_keys[-1]
+        return self._commit_keys[-1] if self._commit_keys else None
 
     def fork(self, commit: str):
         if commit not in self._commit_keys:

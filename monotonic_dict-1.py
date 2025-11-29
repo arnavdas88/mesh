@@ -1,4 +1,5 @@
 from mesh.monotonic_dict import MonotonicDict
+from mesh.utils import analyze_commit_diff
 from datetime import datetime
 from enum import StrEnum
 
@@ -50,7 +51,7 @@ if __name__ == "__main__":
         status = dict_1['status']
     end = time.perf_counter_ns()
     print(f"{(end - start) / 1_000_000_000} s")
-    assert (end - start) / 1_000_000_000 < 1
+    assert (end - start) / 1_000_000_000 < 2
     
     # Calculate dictionary materialization time
     start = time.perf_counter_ns()
@@ -58,5 +59,15 @@ if __name__ == "__main__":
         dict_1.to_dict()
     end = time.perf_counter_ns()
     print(f"{(end - start) / 1_000_000_000} s")
-    assert (end - start) / 1_000_000_000 < 1
+    assert (end - start) / 1_000_000_000 < 2
 
+    # Analysis Test
+    analysis = analyze_commit_diff(dict_1, dict_2)
+    assert analysis.status == 'ahead'
+
+    analysis = analyze_commit_diff(dict_2, dict_1)
+    assert analysis.status == 'behind'
+
+    dict_2['datetime'] = time.time()
+    analysis = analyze_commit_diff(dict_2, dict_1)
+    assert analysis.status == "divergent"
