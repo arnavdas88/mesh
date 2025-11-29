@@ -149,6 +149,23 @@ class MonotonicDict(MutableMapping):
         """Returns the commit history of the dict."""
         return OrderedDict(zip(self._commit_keys, self._commit_values))
 
+    @property
+    def last_commit(self, ) -> str:
+        '''Get the last commit
+        '''
+        return self._commit_keys[-1]
+
+    def fork(self, commit: str):
+        if commit not in self._commit_keys:
+            raise Exception()
+        _commit_idx = self._commit_keys.index(commit)
+
+        _forked_mdict = MonotonicDict()
+        _forked_mdict._commit_keys = self._commit_keys[:_commit_idx + 1]
+        _forked_mdict._commit_values = self._commit_values[:_commit_idx + 1]
+
+        return _forked_mdict
+
     def __eq__(self, other: object) -> bool:
         """
         Equality compares materialized states. Supports comparison with
