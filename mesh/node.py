@@ -69,14 +69,19 @@ class BaseMeshNode:
 
         if analysis.status == "ahead":
             # Remote state is ahead → adopt it
-            self.data._commit_keys = incoming_data._commit_keys
-            self.data._commit_values = incoming_data._commit_values
+            self.data.merge(incoming_data)
+            # self.data._commit_keys = incoming_data._commit_keys
+            # self.data._commit_values = incoming_data._commit_values
 
         elif analysis.status == "behind":
             # Remote state is behind → push ours back to sender
             peers.append(sender)
 
         else:
+            self.data.merge(incoming_data)
+
+            # Divergent Commits
+            print(analysis.message)
             raise Exception(analysis.message)
 
         await self.sync_up(peers)

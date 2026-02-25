@@ -166,6 +166,9 @@ class MonotonicDict(MutableMapping):
 
         return _forked_mdict
 
+    def merge(self, incoming_data):
+        pass
+
     def __eq__(self, other: object) -> bool:
         """
         Equality compares materialized states. Supports comparison with
