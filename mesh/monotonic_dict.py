@@ -166,8 +166,34 @@ class MonotonicDict(MutableMapping):
 
         return _forked_mdict
 
+    def accept(self, incoming_data):
+        # Try Merge
+        merged_data = try_accept(self, incoming_data)
+        # Validate data sanity
+        is_sane = _check(merged_data, self, incoming_data)
+        if is_sane:
+            self._commit_keys = merged_data._commit_keys
+            self._commit_values = merged_data._commit_values
+        return is_sane
+    
     def merge(self, incoming_data):
-        pass
+        # Try Merge
+        merged_data = {**self.to_dict(), **incoming_data.to_dict()}
+
+        merged_monotonic_dict = MonotonicDict()
+        merged_monotonic_dict._commit_keys = self._commit_keys
+        merged_monotonic_dict._commit_values = self._commit_values
+        merged_monotonic_dict._commit_keys += incoming_data._commit_keys
+        merged_monotonic_dict._commit_values += incoming_data._commit_values
+        merged_monotonic_dict._append_op(Op("update", (merged_data, )))
+
+        # Validate data sanity
+        is_sane = _check(merged_monotonic_dict, self, incoming_data)
+        if is_sane:
+            self._commit_keys = merged_monotonic_dict._commit_keys
+            self._commit_values = merged_monotonic_dict._commit_values
+        return is_sane
+
 
     def __eq__(self, other: object) -> bool:
         """
@@ -183,3 +209,57 @@ class MonotonicDict(MutableMapping):
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.to_dict()!r})"
     
+
+
+
+
+def try_accept(existing_data: MonotonicDict,
+              incoming_data: MonotonicDict) -> MonotonicDict:
+    """
+    Merge incoming commit history into existing history.
+
+    Assumptions:
+    - Commit IDs are globally unique.
+    - Histories are append-only.
+    - Forks preserve commit ordering.
+    """
+
+    dummy_dict = MonotonicDict()
+    dummy_dict._commit_keys = existing_data._commit_keys.copy()
+    dummy_dict._commit_values = existing_data._commit_values.copy()
+
+    existing_commits = set(existing_data._commit_keys)
+
+    for commit_id, op in zip(
+        incoming_data._commit_keys,
+        incoming_data._commit_values,
+    ):
+        if commit_id not in existing_commits:
+            dummy_dict._commit_keys.append(commit_id)
+            dummy_dict._commit_values.append(op)
+
+    return dummy_dict
+
+
+
+def _check( merged_data: MonotonicDict, existing_data: MonotonicDict, incoming_data: MonotonicDict, ) -> bool:
+    """
+    Validate merge correctness.
+
+    Raises ValueError on failure.
+    Returns True on success.
+    """
+
+    _edata = existing_data.to_dict()
+    _idata = incoming_data.to_dict()
+    _mdata = merged_data.to_dict()
+
+    for _e in _edata:
+        if _e not in _mdata:
+            return False
+        
+    for _i in _idata:
+        if _i not in _mdata:
+            return False
+        
+    return True

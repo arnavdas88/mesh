@@ -1,5 +1,6 @@
 import asyncio
 import websockets
+import warnings
 from fastapi import WebSocket
 from typing import Dict, List, Optional
 
@@ -22,7 +23,7 @@ class BaseMeshNode:
     - Perform state synchronization
     """
 
-    def __init__(self, name: Optional[str] = None):
+    def __init__(self, name: Optional[str] = None, action_on_conflict = "warn"):
         self.name = name
 
         # Active websocket connections:
@@ -32,6 +33,8 @@ class BaseMeshNode:
 
         # Replicated state
         self.data = MonotonicDict()
+
+        self.action_on_conflict = action_on_conflict
 
     def __repr__(self):
         return f"<Node {self.name} connections({list(self.connections.keys())})>"
@@ -52,7 +55,7 @@ class BaseMeshNode:
         for node in nodes_list:
             await self.send(node, self.data)
 
-    async def sync_up_recv(self, sender: str, incoming_data: MonotonicDict):
+    async def sync_up_recv(self, sender: str, incoming_data: MonotonicDict, action_on_conflict="warn"):
         """
         Handle incoming state and resolve commit differences.
         """
@@ -69,20 +72,29 @@ class BaseMeshNode:
 
         if analysis.status == "ahead":
             # Remote state is ahead → adopt it
-            self.data.merge(incoming_data)
-            # self.data._commit_keys = incoming_data._commit_keys
-            # self.data._commit_values = incoming_data._commit_values
+            self.data.accept(incoming_data)
 
         elif analysis.status == "behind":
             # Remote state is behind → push ours back to sender
             peers.append(sender)
 
         else:
-            self.data.merge(incoming_data)
-
             # Divergent Commits
-            print(analysis.message)
-            raise Exception(analysis.message)
+            match action_on_conflict:
+                case "accept":
+                    warnings.warn(analysis.message)
+                    self.data.accept(incoming_data)
+                    peers.append(sender)
+                case "merge":
+                    warnings.warn(analysis.message)
+                    self.data.merge(incoming_data)
+                    peers.append(sender)
+                case "warn":
+                    warnings.warn(analysis.message)
+                case "exception":
+                    raise Exception(analysis.message)
+                case "ignore":
+                    pass
 
         await self.sync_up(peers)
 
@@ -111,7 +123,7 @@ class BaseMeshNode:
         Receive serialized state from peer and trigger sync logic.
         """
         incoming_data = deserialize_monotonic_dict(raw_payload)
-        await self.sync_up_recv(peer, incoming_data)
+        await self.sync_up_recv(peer, incoming_data, action_on_conflict=self.action_on_conflict)
 
     # ------------------------------------------------------------------
     # Public Data API
@@ -158,8 +170,8 @@ class Node(BaseMeshNode):
     - Accepting inbound connections
     """
 
-    def __init__(self, name=None, app=None, client=None):
-        super().__init__(name=name)
+    def __init__(self, name=None, app=None, client=None, action_on_conflict="warn"):
+        super().__init__(name=name, action_on_conflict=action_on_conflict)
 
         self.app = app
         self.client = client

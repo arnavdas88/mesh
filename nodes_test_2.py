@@ -38,7 +38,7 @@ class UvicornTestServer:
 # Reusable Node Generator
 # -------------------------------------------------
 
-async def node_server(name: str, port: int, join_urls=None):
+async def node_server(name: str, port: int, join_urls=None, config = {}):
 
     join_urls = join_urls or []
 
@@ -55,13 +55,13 @@ async def node_server(name: str, port: int, join_urls=None):
         await asyncio.sleep(1)
 
         # Register self
-        node_lists = await node.get_data("__node_lists__", default=[])
-        await node.put_data({"__node_lists__": node_lists + [name]})
+        # node_lists = await node.get_data("__node_lists__", default=[])
+        await node.put_data({f"__node_{name}__": {"name": name, "config": config}})
 
         yield
 
     app = FastAPI(lifespan=lifespan)
-    node = Node(name=name, app=app)
+    node = Node(name=name, app=app, action_on_conflict="merge")
 
     @app.get("/")
     async def root():
@@ -76,6 +76,13 @@ async def node_server(name: str, port: int, join_urls=None):
     await server.stop()
     yield
 
+
+def get_internal_data(data):
+    internal_data = []
+    for k, v in data.to_dict().items():
+        if k.startswith("__") and k.endswith("__"):
+            internal_data.append(v)
+    return internal_data
 
 # -------------------------------------------------
 # Main Simulation
@@ -102,20 +109,20 @@ async def main():
     await asyncio.sleep(3)
 
     # Validate Partition A
-    alice_data = await alice.get_data("__node_lists__", default=[])
-    bob_data = await bob.get_data("__node_lists__", default=[])
-    charlie_data = await charlie.get_data("__node_lists__", default=[])
-    dan_data = await dan.get_data("__node_lists__", default=[])
+    alice_data = get_internal_data(alice.data)
+    bob_data = get_internal_data(bob.data)
+    charlie_data = get_internal_data(charlie.data)
+    dan_data = get_internal_data(dan.data)
 
-    assert "Alice" in alice_data
-    assert "Bob" in alice_data
-    assert "Charlie" in alice_data
-    assert "Dan" in alice_data
+    assert "Alice" in str(alice_data)
+    assert "Bob" in str(alice_data)
+    assert "Charlie" in str(alice_data)
+    assert "Dan" in str(alice_data)
 
-    assert "Alice" in bob_data
-    assert "Bob" in bob_data
-    assert "Charlie" in bob_data
-    assert "Dan" in bob_data
+    assert "Alice" in str(bob_data)
+    assert "Bob" in str(bob_data)
+    assert "Charlie" in str(bob_data)
+    assert "Dan" in str(bob_data)
 
 
     # ---------------------------------------------
@@ -137,20 +144,20 @@ async def main():
     await asyncio.sleep(3)
 
     # Validate Partition B
-    ema_data = await ema.get_data("__node_lists__", default=[])
-    fargo_data = await fargo.get_data("__node_lists__", default=[])
-    george_data = await george.get_data("__node_lists__", default=[])
-    hannah_data = await hannah.get_data("__node_lists__", default=[])
+    ema_data = get_internal_data(ema.data)
+    fargo_data = get_internal_data(fargo.data)
+    george_data = get_internal_data(george.data)
+    hannah_data = get_internal_data(hannah.data)
 
-    assert "Ema" in ema_data
-    assert "Fargo" in ema_data
-    assert "George" in ema_data
-    assert "Hannah" in ema_data
+    assert "Ema" in str(ema_data)
+    assert "Fargo" in str(ema_data)
+    assert "George" in str(ema_data)
+    assert "Hannah" in str(ema_data)
 
-    assert "Ema" in fargo_data
-    assert "Fargo" in fargo_data
-    assert "George" in fargo_data
-    assert "Hannah" in fargo_data
+    assert "Ema" in str(fargo_data)
+    assert "Fargo" in str(fargo_data)
+    assert "George" in str(fargo_data)
+    assert "Hannah" in str(fargo_data)
 
 
     # Bridge connection (connect Alice to Ema)
@@ -159,33 +166,39 @@ async def main():
     await asyncio.sleep(2)  # allow merge + propagation
     await asyncio.sleep(2)  # allow merge + propagation
 
+    igor_fixture = node_server("Igor", 8014, ["ws://127.0.0.1:8010/mesh"])
+    igor = await igor_fixture.__anext__()
 
 
-    # NOTE : Not work beyond this, as commits diverged due to keeping the nodes name data in the same monotonic dictionary.
+
+
     # -------------------------------------------------
     # Final Full Mesh Validation
     # -------------------------------------------------
 
-    final_alice = await alice.get_data("__node_lists__", default=[])
-    final_bob = await bob.get_data("__node_lists__", default=[])
-    final_charlie = await charlie.get_data("__node_lists__", default=[])
-    final_dan = await dan.get_data("__node_lists__", default=[])
+    final_alice = get_internal_data(alice.data)
+    final_bob = get_internal_data(bob.data)
+    final_charlie = get_internal_data(charlie.data)
+    final_dan = get_internal_data(dan.data)
 
-    final_ema = await ema.get_data("__node_lists__", default=[])
-    final_fargo = await fargo.get_data("__node_lists__", default=[])
-    final_george = await george.get_data("__node_lists__", default=[])
-    final_hannah = await hannah.get_data("__node_lists__", default=[])
+    final_ema = get_internal_data(ema.data)
+    final_fargo = get_internal_data(fargo.data)
+    final_george = get_internal_data(george.data)
+    final_hannah = get_internal_data(hannah.data)
 
     # Check global convergence
-    assert "Alice" in final_hannah
-    assert "Bob" in final_hannah
-    assert "Charlie" in final_hannah
-    assert "Dan" in final_hannah
+    assert "Alice" in str(final_hannah)
+    assert "Bob" in str(final_hannah)
+    assert "Charlie" in str(final_hannah)
+    assert "Dan" in str(final_hannah)
 
-    assert "Ema" in final_alice
-    assert "Fargo" in final_alice
-    assert "George" in final_alice
-    assert "Hannah" in final_alice
+    assert "Ema" in str(final_alice)
+    assert "Fargo" in str(final_alice)
+    assert "George" in str(final_alice)
+    assert "Hannah" in str(final_alice)
+
+    assert "Igor" in str(final_hannah)
+    assert "Igor" in str(final_alice)
 
 
     print("Full mesh convergence successful.")
@@ -204,6 +217,7 @@ async def main():
     await fargo_fixture.__anext__()
     await george_fixture.__anext__()
     await hannah_fixture.__anext__()
+    await igor_fixture.__anext__()
 
 
 if __name__ == "__main__":
