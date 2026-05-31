@@ -1,10 +1,12 @@
-# distributed-data-synchronization
+# Mesh - for FastAPI
 
+## Local Dev Installation
 ```bash
-$ /usr/bin/env /usr/bin/python3 -m pip install --break-system-packages -r requirements.txt 
+$ /usr/bin/env /usr/bin/python3 -m pip install --break-system-packages -e .
 ```
 
 
+# Example
 ```bash
-$ /usr/bin/env /usr/bin/python3 nodes_test_2.py
+$ docker compose up
 ```

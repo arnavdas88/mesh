@@ -1,3 +1,5 @@
 fastapi[standard]
 websockets
+pydantic
+pytest-asyncio
 pytest
