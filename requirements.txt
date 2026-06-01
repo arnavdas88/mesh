@@ -3,3 +3,4 @@ websockets
 pydantic
 pytest-asyncio
 pytest
+mkdocs
