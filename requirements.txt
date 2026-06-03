@@ -4,3 +4,6 @@ pydantic
 pytest-asyncio
 pytest
 mkdocs
+mkdocs-material
+mkdocstrings[python] 
+mkdocs-autoapi

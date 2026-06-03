@@ -1,1 +1,53 @@
-site_name: My Docs
+site_name: Mesh Documentation
+site_url: https://mesh.github.io/
+
+theme:
+  name: material
+  palette:
+    primary: black
+    accent: white
+  features:
+    - content.code.annotate
+    - navigation.tabs
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.instant.progress
+    - navigation.instant.preview
+
+nav:
+  - Home: index.md
+  - Quick Start: quick-start.md
+  - Architecture: 
+    - Overview: architecture/overview.md
+    - Proof: architecture/proof.md
+  - User Guide:
+    # - Getting Started: user-guide/getting-started.md
+    # - Managing Data: user-guide/managing-data.md
+    - References: autoapi/
+  - About:
+    - License: license.md
+
+plugins:
+  - search
+  - mkdocs-autoapi:
+      autoapi_add_nav_entry: False
+      autoapi_keep_files: False
+      autoapi_root: autoapi
+      autoapi_file_patterns:
+        - "mesh/*.py"  # Automatically grab all Python files
+  - mkdocstrings
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.arithmatex:
+      generic: true
+
+extra_javascript:
+  - assets/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
