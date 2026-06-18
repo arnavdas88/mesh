@@ -3,14 +3,18 @@ hide:
   - navigation
 ---
 
+
+<!-- ![Mesh Illustration](assets/illustration-1.png){ align=left } -->
+<img src="assets/illustration-1.png" width="400px" align="left">
+
 # Welcome to Mesh
 
-<!-- ![Mesh Illustration](assets/illustration-1.png) -->
-<!-- <img src="assets/illustration-1.png" width="300px"> -->
-
-Mesh is a distributed synchronization library designed for FastAPI applications. It enables multiple independent service instances to form a peer-to-peer network and maintain a shared, eventually consistent state store.
+Mesh is a leaderless, weakly coupled, distributed data store library designed for FastAPI applications. It enables multiple independent service instances to form a peer-to-peer network and maintain a shared, eventually consistent state store.
 
 The library solves the problem of state distribution in decentralized environments without requiring a central database. It uses an append-only operation log and WebSocket-based synchronization to ensure that all nodes in the mesh eventually converge on the same data.
+
+Similar alernatives like etcd, zookeeper operate on leader based architecture, and require seperate central service to be running and reachable. Mesh is leaderless meaning there is no central service or leader, and is completely distributed. Weak coupling enables the Mesh to be operate in environments with heterogeneous standards. 
+
 
 ## When to use
 Mesh is purpose-built for situations where multiple FastAPI replicas need to agree on a piece of shared state without paying the cost of a centralised store. Consider Mesh when you need any of the following:
