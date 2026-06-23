@@ -5,9 +5,11 @@ from collections.abc import MutableMapping, Mapping
 
 from dataclasses import dataclass
 
-from typing import Any, Dict, Tuple, Optional
+from typing import Any, Dict, List, Tuple, Optional
 
 import uuid
+
+from .callback import Callback
 
 
 @dataclass(frozen=True)
@@ -16,7 +18,7 @@ class Op:
     kind: str            # 'set', 'del', 'update', 'clear'
     args: Tuple[Any, ...]
 
-class MonotonicDict(MutableMapping):
+class MonotonicDict(MutableMapping, Callback):
     """
     A dictionary-like object whose *true* state is defined by an append-only,
     monotonically ordered log of operations.
@@ -26,6 +28,8 @@ class MonotonicDict(MutableMapping):
     """
 
     def __init__(self, *args, **kwargs):
+        super().__init__()
+
         # Monotonic ordered log: UUID -> Op
         self._commit_keys: list[str] = []
         self._commit_values: list[Op] = []
@@ -43,6 +47,23 @@ class MonotonicDict(MutableMapping):
 
         self._commit_keys.append(op_id)
         self._commit_values.append(op)
+
+        # Trigger callbacks based on operation type  
+        if op.kind == "set":  
+            key, value = op.args  
+            self._trigger_callbacks(key, value, "set")  
+        elif op.kind == "del":  
+            (key,) = op.args  
+            self._trigger_callbacks(key, None, "del")  
+        elif op.kind == "update":  
+            (mapping,) = op.args  
+            for key, value in mapping.items():  
+                self._trigger_callbacks(key, value, "update")  
+        elif op.kind == "clear":  
+            # Trigger callbacks for all keys being cleared  
+            state = self._materialize()  
+            for key in state.keys():  
+                self._trigger_callbacks(key, None, "clear")  
 
     def _materialize(self) -> Dict[Any, Any]:
         """
@@ -169,14 +190,34 @@ class MonotonicDict(MutableMapping):
     def accept(self, incoming_data):
         # Try Merge
         merged_data = try_accept(self, incoming_data)
+
         # Validate data sanity
         is_sane = _check(merged_data, self, incoming_data)
+
         if is_sane:
+            # Find new operations that were added  
+            existing_commits = set(self._commit_keys)  
+            new_ops = [  
+                op for commit_id, op in zip(merged_data._commit_keys, merged_data._commit_values)  
+                if commit_id not in existing_commits  
+            ]
+
             self._commit_keys = merged_data._commit_keys
             self._commit_values = merged_data._commit_values
+                      
+            # Trigger callbacks for the new operations  
+            self._trigger_callbacks_for_ops(new_ops)  
         return is_sane
     
     def merge(self, incoming_data):
+      
+        # Track incoming operations  
+        existing_commits = set(self._commit_keys)  
+        incoming_ops = [  
+            op for commit_id, op in zip(incoming_data._commit_keys, incoming_data._commit_values)  
+            if commit_id not in existing_commits  
+        ]  
+
         # Try Merge
         merged_data = {**self.to_dict(), **incoming_data.to_dict()}
 
@@ -190,10 +231,15 @@ class MonotonicDict(MutableMapping):
         # Validate data sanity
         is_sane = _check(merged_monotonic_dict, self, incoming_data)
         if is_sane:
+
+            # Trigger callbacks for incoming operations and the final update  
+            self._trigger_callbacks_for_ops(incoming_ops)  
+            self._trigger_callbacks_for_ops([Op("update", (merged_data, ))])  
+
             self._commit_keys = merged_monotonic_dict._commit_keys
             self._commit_values = merged_monotonic_dict._commit_values
-        return is_sane
 
+        return is_sane
 
     def __eq__(self, other: object) -> bool:
         """
@@ -209,8 +255,23 @@ class MonotonicDict(MutableMapping):
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.to_dict()!r})"
     
-
-
+    def _trigger_callbacks_for_ops(self, ops: List[Op]) -> None:  
+        """Trigger callbacks for a list of operations."""  
+        for op in ops:  
+            if op.kind == "set":  
+                key, value = op.args  
+                self._trigger_callbacks(key, value, "set")  
+            elif op.kind == "del":  
+                (key,) = op.args  
+                self._trigger_callbacks(key, None, "del")  
+            elif op.kind == "update":  
+                (mapping,) = op.args  
+                for key, value in mapping.items():  
+                    self._trigger_callbacks(key, value, "update")  
+            elif op.kind == "clear":  
+                state = self._materialize()  
+                for key in state.keys():  
+                    self._trigger_callbacks(key, None, "clear")
 
 
 def try_accept(existing_data: MonotonicDict,
@@ -239,8 +300,6 @@ def try_accept(existing_data: MonotonicDict,
             dummy_dict._commit_values.append(op)
 
     return dummy_dict
-
-
 
 def _check( merged_data: MonotonicDict, existing_data: MonotonicDict, incoming_data: MonotonicDict, ) -> bool:
     """

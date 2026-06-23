@@ -1,11 +1,12 @@
 import json
 import websockets
+from websockets.asyncio.server import ServerConnection
 from fastapi import WebSocket
 from typing import Dict
 from .monotonic_dict import MonotonicDict, Op
 
 class WebSocketProtocol:
-    def __init__(self, ws : websockets.WebSocketClientProtocol | WebSocket):
+    def __init__(self, ws : ServerConnection | WebSocket):
         self.ws = ws
         self.ws_type = type(ws)
     
