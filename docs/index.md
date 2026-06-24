@@ -1,4 +1,11 @@
 ---
+site_name: Mesh - Documentation
+site_url: https://arnavdas88.github.io/mesh/
+site_description: Mesh is a leaderless, weakly coupled, distributed data store python library designed for FastAPI applications. It enables multiple independent service instances to form a ad-hoc cluster and maintain a shared, eventually consistent state store.
+site_author: Arnav Das
+repo_name: mesh
+author: Arnav Das
+repo_url: https://github.com/arnavdas88/mesh/
 hide:
   - navigation
 ---
@@ -11,9 +18,9 @@ hide:
 
 Mesh is a leaderless, weakly coupled, distributed data store library designed for FastAPI applications. It enables multiple independent service instances to form a peer-to-peer network and maintain a shared, eventually consistent state store.
 
-The library solves the problem of state distribution in decentralized environments without requiring a central database. It uses an append-only operation log and WebSocket-based synchronization to ensure that all nodes in the mesh eventually converge on the same data.
+The library solves the problem of state distribution in decentralized environments without requiring a central database or service. The state distribution works locally at any point of time, propagating over the network of mesh, which means, mesh will also work on partially isolated networks. Mesh uses an append-only operation log and WebSocket-based synchronization to ensure that all locally connected nodes eventually converge on the same data. This repeats over and over until all the nodes in the mesh converges on the same data.
 
-Similar alernatives like etcd, zookeeper operate on leader based architecture, and require seperate central service to be running and reachable. Mesh is leaderless meaning there is no central service or leader, and is completely distributed. Weak coupling enables the Mesh to be operate in environments with heterogeneous standards. 
+Similar alernatives like `etcd`, `zookeeper` operate on leader based architecture, and require seperate central service to be running and reachable. Mesh is leaderless meaning there is no central service or leader, and is completely distributed. Weak coupling enables the Mesh to be operate in environments with heterogeneous standards. 
 
 
 ## When to use

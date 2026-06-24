@@ -1,4 +1,11 @@
 ---
+site_name: Mesh - Documentation
+site_author: Arnav Das
+site_url: https://arnavdas88.github.io/mesh/
+site_description: Mesh is a leaderless, weakly coupled, distributed data store python library designed for FastAPI applications. It enables multiple independent service instances to form a peer-to-peer network and maintain a shared, eventually consistent state store.
+repo_name: mesh
+author: Arnav Das
+repo_url: https://github.com/arnavdas88/mesh/
 hide:
   - navigation
 ---
