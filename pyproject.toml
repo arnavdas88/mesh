@@ -7,6 +7,7 @@ name = "mesh"
 version = "0.1.0"
 authors = [
   { name="Arnav Das", email="arnav.das88@gmail.com" },
+  { name="Sumeet Jana", email="sumeetjana@icloud.com" }
 ]
 description = "A small mesh package for Fastapi"
 readme = "README.md"
