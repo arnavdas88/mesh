@@ -31,8 +31,7 @@ URLS_TO_JOIN = os.getenv("JOIN_TO") or None
 
 logging.basicConfig(
     level=logging.INFO,
-    # format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    format='\t   %(levelname)s   %(message)s',
+    format='\t%(levelname)s   %(message)s',
     handlers=[logging.StreamHandler(sys.stdout)]
 )
 logger  = logging.getLogger()
@@ -64,8 +63,14 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title=f"Test Server {NAME}", lifespan=lifespan)
 node = Node(name=NAME, app=app, action_on_conflict="merge")
 
-def callback(data: Node, key, value, operation):    
-    logger.info(f"Got operation {operation} in node {node.name}")
+def callback(data, key, value, operation, source: Node):
+    logger.info( " ".join(
+            [
+                f"Got operation \"{operation}\"",
+                f"from {source} for key \"{key}\"" if source else f"for key \"{key}\"",
+            ]
+        )
+    )
 
 node.data.register_global_callback(callback)
 

@@ -1,8 +1,14 @@
+import sys
 import asyncio
+import logging
+from urllib.parse import urljoin
 import websockets
 import warnings
-from fastapi import WebSocket
+from starlette.datastructures import Address
+from fastapi import Request, WebSocket
 from typing import Dict, List, Optional
+
+from importlib.metadata import version
 
 from .monotonic_dict import MonotonicDict
 from .utils import analyze_commit_diff
@@ -11,6 +17,13 @@ from .transport import (
     serialize_monotonic_dict,
     deserialize_monotonic_dict
 )
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='\t   %(levelname)s   %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
+logger  = logging.getLogger("Mesh")
 
 
 class BaseMeshNode:
@@ -72,7 +85,7 @@ class BaseMeshNode:
 
         if analysis.status == "ahead":
             # Remote state is ahead → adopt it
-            self.data.accept(incoming_data)
+            self.data.accept(incoming_data, from_node=sender)
 
         elif analysis.status == "behind":
             # Remote state is behind → push ours back to sender
@@ -83,11 +96,13 @@ class BaseMeshNode:
             match action_on_conflict:
                 case "accept":
                     warnings.warn(analysis.message)
-                    self.data.accept(incoming_data)
+                    # logger.warning(analysis.message, source=self.name)
+                    self.data.accept(incoming_data, from_node=sender)
                     peers.append(sender)
                 case "merge":
                     warnings.warn(analysis.message)
-                    self.data.merge(incoming_data)
+                    # logger.warning(analysis.message, source=self.name)
+                    self.data.merge(incoming_data, from_node=sender)
                     peers.append(sender)
                 case "warn":
                     warnings.warn(analysis.message)
@@ -170,11 +185,12 @@ class Node(BaseMeshNode):
     - Accepting inbound connections
     """
 
-    def __init__(self, name=None, app=None, client=None, action_on_conflict="warn"):
+    def __init__(self, name=None, app=None, client=None, action_on_conflict="warn", endpoint="/mesh"):
         super().__init__(name=name, action_on_conflict=action_on_conflict)
 
         self.app = app
         self.client = client
+        self.endpoint = endpoint
 
         # Register websocket endpoint if FastAPI app provided
         if self.app:
@@ -185,7 +201,7 @@ class Node(BaseMeshNode):
         Register `/mesh` websocket endpoint for inbound connections.
         """
 
-        @self.app.websocket("/mesh")
+        @self.app.websocket(self.endpoint)
         async def websocket_endpoint(websocket: WebSocket):
             await websocket.accept()
 
@@ -200,6 +216,20 @@ class Node(BaseMeshNode):
                 # Silent disconnect handling (unchanged behavior)
                 pass
     
+        @self.app.get("/mesh-info", tags=["mesh"])
+        async def get_domain(request: Request):
+            # Returns something like "https://example.com" or "http://localhost:8000/"
+            base_url = str(request.base_url) 
+
+            return {
+                "name": self.name,
+                "servers": self.app.servers,
+                "version": version("mesh"),
+                "action_on_conflict": self.action_on_conflict,
+                "domain": request.base_url.hostname,
+                "docs_url": urljoin(base_url, self.app.docs_url) if self.app.docs_url else None,
+                "join_url": urljoin(base_url, self.endpoint),
+            }
 
     # ------------------------------------------------------------------
     # Connection Management
@@ -215,12 +245,12 @@ class Node(BaseMeshNode):
         """
         for url in urls:
             ws = await websockets.connect(url)
-
+            peer = Address(*ws.remote_address)
             # Store connection wrapper
-            self.connections[url] = WebSocketProtocol(ws)
+            self.connections[str(peer)] = WebSocketProtocol(ws)
 
             # Spawn background listener task
-            asyncio.create_task(self._listen(ws, url))
+            asyncio.create_task(self._listen(ws, str(peer)))
 
         await asyncio.sleep(1)
 

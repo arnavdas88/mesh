@@ -7,6 +7,7 @@ services:
       - "8001:8001"
     volumes:
       - ./example/:/code
+      - ./:/mesh
     environment:
       - ENV=development
     command: fastapi dev --host 0.0.0.0 --port 8001 --reload app/main.py
@@ -19,6 +20,7 @@ services:
       - "8002:8002"
     volumes:
       - ./example/:/code
+      - ./:/mesh
     environment:
       - ENV=development
       - JOIN_TO=ws://alice:8001/mesh
@@ -27,30 +29,32 @@ services:
     depends_on:
       - alice
 
-  charlie:
-    image: mesh/mesh-example-image:latest
-    hostname: charlie
-    ports:
-      - "8003:8003"
-    volumes:
-      - ./example/:/code
-    environment:
-      - ENV=development
-    command: fastapi dev --host 0.0.0.0 --port 8003 --reload app/main.py
-    restart: always
+  # charlie:
+  #   image: mesh/mesh-example-image:latest
+  #   hostname: charlie
+  #   ports:
+  #     - "8003:8003"
+  #   volumes:
+  #     - ./example/:/code
+  #     - ./:/mesh
+  #   environment:
+  #     - ENV=development
+  #   command: fastapi dev --host 0.0.0.0 --port 8003 --reload app/main.py
+  #   restart: always
 
-  dave:
-    image: mesh/mesh-example-image:latest
-    hostname: dave
-    ports:
-      - "8004:8004"
-    volumes:
-      - ./example/:/code
-    environment:
-      - ENV=development
-      - JOIN_TO=ws://charlie:8003/mesh
-    command: fastapi dev --host 0.0.0.0 --port 8004 --reload app/main.py
-    restart: always
-    depends_on:
-      - charlie
+  # dave:
+  #   image: mesh/mesh-example-image:latest
+  #   hostname: dave
+  #   ports:
+  #     - "8004:8004"
+  #   volumes:
+  #     - ./example/:/code
+  #     - ./:/mesh
+  #   environment:
+  #     - ENV=development
+  #     - JOIN_TO=ws://charlie:8003/mesh
+  #   command: fastapi dev --host 0.0.0.0 --port 8004 --reload app/main.py
+  #   restart: always
+  #   depends_on:
+  #     - charlie
 

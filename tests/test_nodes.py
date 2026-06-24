@@ -84,8 +84,6 @@ def get_internal_data(data):
             internal_data.append(v)
     return internal_data
 
-
-
 async def test_callbacks():
 
     fixtures = []
@@ -93,27 +91,27 @@ async def test_callbacks():
     captured_data_callback = []
     captured_data_global = []
 
-    def callback(mdict, key, value, op):
+    def callback(mdict, key, value, op, src_node):
         captured_data_callback.append([key, value])
 
-    def global_callback(mdict, key, value, op):
+    def global_callback(mdict, key, value, op, src_node):
         captured_data_global.append(key)
 
     try:
 
         # Create 3 nodes in a chain: node2 joins node1, node3 joins node1  
-        node1_fixture = node_server("Node1", 8000)
+        node1_fixture = node_server("Node1", 9000)
         node1 = await node1_fixture.__anext__()
         node1.data.register_callback("callbacked_key", callback)
         node1.data.register_global_callback(global_callback)
 
         fixtures.append(node1_fixture)  
           
-        node2_fixture = node_server("Node2", 8001, ["ws://127.0.0.1:8000/mesh"])  
+        node2_fixture = node_server("Node2", 9001, ["ws://127.0.0.1:9000/mesh"])  
         node2 = await node2_fixture.__anext__()  
         fixtures.append(node2_fixture)
 
-        node3_fixture = node_server("Node3", 8002, ["ws://127.0.0.1:8000/mesh"])  
+        node3_fixture = node_server("Node3", 9002, ["ws://127.0.0.1:9000/mesh"])  
         node3 = await node3_fixture.__anext__()  
         fixtures.append(node3_fixture)  
 
@@ -124,8 +122,10 @@ async def test_callbacks():
         await asyncio.sleep(3)
 
     finally:
+        assert node2.data.to_dict() == node1.data.to_dict()
         assert captured_data_callback == [['callbacked_key', 'Some random data!']]
         assert captured_data_global == ['__node_Node2__', '__node_Node3__', 'random_key_1', 'callbacked_key', 'random_key_2']
+        
 
         # -------------------------------------------------
         # CLEANUP

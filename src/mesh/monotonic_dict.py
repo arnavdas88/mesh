@@ -49,21 +49,21 @@ class MonotonicDict(MutableMapping, Callback):
         self._commit_values.append(op)
 
         # Trigger callbacks based on operation type  
-        if op.kind == "set":  
-            key, value = op.args  
-            self._trigger_callbacks(key, value, "set")  
-        elif op.kind == "del":  
-            (key,) = op.args  
-            self._trigger_callbacks(key, None, "del")  
-        elif op.kind == "update":  
-            (mapping,) = op.args  
-            for key, value in mapping.items():  
-                self._trigger_callbacks(key, value, "update")  
-        elif op.kind == "clear":  
-            # Trigger callbacks for all keys being cleared  
-            state = self._materialize()  
-            for key in state.keys():  
-                self._trigger_callbacks(key, None, "clear")  
+        if op.kind == "set":
+            key, value = op.args
+            self._trigger_callbacks(key, value, "set")
+        elif op.kind == "del":
+            (key,) = op.args
+            self._trigger_callbacks(key, None, "del")
+        elif op.kind == "update":
+            (mapping,) = op.args
+            for key, value in mapping.items():
+                self._trigger_callbacks(key, value, "update")
+        elif op.kind == "clear":
+            # Trigger callbacks for all keys being cleared
+            state = self._materialize()
+            for key in state.keys():
+                self._trigger_callbacks(key, None, "clear")
 
     def _materialize(self) -> Dict[Any, Any]:
         """
@@ -187,7 +187,7 @@ class MonotonicDict(MutableMapping, Callback):
 
         return _forked_mdict
 
-    def accept(self, incoming_data):
+    def accept(self, incoming_data, from_node = None):
         # Try Merge
         merged_data = try_accept(self, incoming_data)
 
@@ -204,14 +204,14 @@ class MonotonicDict(MutableMapping, Callback):
 
             self._commit_keys = merged_data._commit_keys
             self._commit_values = merged_data._commit_values
-                      
+            
             # Trigger callbacks for the new operations  
-            self._trigger_callbacks_for_ops(new_ops)  
+            self._trigger_callbacks_for_ops(new_ops, src_node=from_node)
         return is_sane
     
-    def merge(self, incoming_data):
+    def merge(self, incoming_data, from_node = None):
       
-        # Track incoming operations  
+        # Track incoming operations
         existing_commits = set(self._commit_keys)  
         incoming_ops = [  
             op for commit_id, op in zip(incoming_data._commit_keys, incoming_data._commit_values)  
@@ -233,8 +233,8 @@ class MonotonicDict(MutableMapping, Callback):
         if is_sane:
 
             # Trigger callbacks for incoming operations and the final update  
-            self._trigger_callbacks_for_ops(incoming_ops)  
-            self._trigger_callbacks_for_ops([Op("update", (merged_data, ))])  
+            # self._trigger_callbacks_for_ops(incoming_ops, src_node=from_node)
+            self._trigger_callbacks_for_ops([Op("update", (merged_data, ))], src_node=from_node)
 
             self._commit_keys = merged_monotonic_dict._commit_keys
             self._commit_values = merged_monotonic_dict._commit_values
@@ -255,24 +255,23 @@ class MonotonicDict(MutableMapping, Callback):
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.to_dict()!r})"
     
-    def _trigger_callbacks_for_ops(self, ops: List[Op]) -> None:  
+    def _trigger_callbacks_for_ops(self, ops: List[Op], src_node = None) -> None:  
         """Trigger callbacks for a list of operations."""  
-        for op in ops:  
-            if op.kind == "set":  
-                key, value = op.args  
-                self._trigger_callbacks(key, value, "set")  
-            elif op.kind == "del":  
-                (key,) = op.args  
-                self._trigger_callbacks(key, None, "del")  
-            elif op.kind == "update":  
-                (mapping,) = op.args  
-                for key, value in mapping.items():  
-                    self._trigger_callbacks(key, value, "update")  
-            elif op.kind == "clear":  
-                state = self._materialize()  
-                for key in state.keys():  
-                    self._trigger_callbacks(key, None, "clear")
-
+        for op in ops:
+            if op.kind == "set":
+                key, value = op.args
+                self._trigger_callbacks(key, value, "set", src_node=src_node)
+            elif op.kind == "del":
+                (key,) = op.args
+                self._trigger_callbacks(key, None, "del", src_node=src_node)
+            elif op.kind == "update":
+                (mapping,) = op.args
+                for key, value in mapping.items():
+                    self._trigger_callbacks(key, value, "update", src_node=src_node)
+            elif op.kind == "clear":
+                state = self._materialize()
+                for key in state.keys():
+                    self._trigger_callbacks(key, None, "clear", src_node=src_node)
 
 def try_accept(existing_data: MonotonicDict,
               incoming_data: MonotonicDict) -> MonotonicDict:
