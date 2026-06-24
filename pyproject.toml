@@ -19,3 +19,6 @@ dependencies = [
     "pytest",
     "pytest-asyncio"
 ]
+
+[tool.setuptools.packages.find]
+where = ["mesh"]  # Points to the directory containing your packages
