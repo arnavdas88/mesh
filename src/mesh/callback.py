@@ -39,7 +39,7 @@ class Callback(object):
                     callback(self, key, value, operation)  
                 except Exception:  
                     pass  # Silent failure to avoid breaking the dict  
-        
+
         # Trigger global callbacks  
         for callback in self._global_callbacks:  
             try:  

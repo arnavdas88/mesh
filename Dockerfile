@@ -13,7 +13,7 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 # Install mesh
 WORKDIR /mesh
 COPY ./ /mesh
-RUN pip install --no-cache-dir --upgrade .
+RUN pip install --no-cache-dir --upgrade -e .
 
 # Set working directory inside the container
 WORKDIR /code

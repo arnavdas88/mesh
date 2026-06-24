@@ -3,6 +3,7 @@ import socket
 import asyncio
 import platform
 import contextlib
+import logging
 
 from fastapi import FastAPI
 from mesh.node import Node
@@ -26,6 +27,15 @@ CONFIG = {
 }
 SLEEP = 1
 URLS_TO_JOIN = os.getenv("JOIN_TO") or None
+
+
+logging.basicConfig(
+    level=logging.INFO,
+    # format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    format='\t   %(levelname)s   %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
+logger  = logging.getLogger()
 
 @contextlib.asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -54,12 +64,15 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title=f"Test Server {NAME}", lifespan=lifespan)
 node = Node(name=NAME, app=app, action_on_conflict="merge")
 
+def callback(data: Node, key, value, operation):    
+    logger.info(f"Got operation {operation} in node {node.name}")
+
+node.data.register_global_callback(callback)
 
 @app.get("/")
 async def root():
     internal_data = get_internal_data(node.data)
     return {"name": NAME, "status": "running", "internal_data": internal_data}
-
 
 @app.get("/join")
 async def join(url: str):
