@@ -30,7 +30,7 @@ nav:
 
 plugins:
   - search
-  - privacy
+  # - privacy
   - optimize:
       optimize_png: false
       optimize_jpg: false
