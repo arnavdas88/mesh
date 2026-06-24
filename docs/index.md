@@ -1,15 +1,22 @@
 ---
-site_name: Mesh - Documentation
+site_name: Mesh - A leaderless distributed data store
 site_url: https://arnavdas88.github.io/mesh/
 site_description: Mesh is a leaderless, weakly coupled, distributed data store python library designed for FastAPI applications. It enables multiple independent service instances to form a ad-hoc cluster and maintain a shared, eventually consistent state store.
 site_author: Arnav Das
 
-title: Mesh - A leaderless distributed data store
+title: Mesh
 description: Mesh is a leaderless, weakly coupled, distributed data store python library designed for FastAPI applications. It enables multiple independent service instances to form a ad-hoc cluster and maintain a shared, eventually consistent state store.
 
 repo_name: mesh
 author: Arnav Das
 repo_url: https://github.com/arnavdas88/mesh/
+
+meta:
+  - name: keywords
+    content: mesh, fastapi, mkdocs, distributed system, leaderless, cloud native
+  - name: robots
+    content: index, follow
+
 hide:
   - navigation
 ---
@@ -30,10 +37,10 @@ Similar alernatives like `etcd`, `zookeeper` operate on leader based architectur
 ## When to use
 Mesh is purpose-built for situations where multiple FastAPI replicas need to agree on a piece of shared state without paying the cost of a centralised store. Consider Mesh when you need any of the following:
 
-- **Distributed caches**: Share computed results across replicas so that every instance can serve warm data, even if it wasn’t the one that originally computed it.
 - **Cluster membership registries**: Let each node register its own presence at startup and deregister on shutdown, giving every peer a live view of who is in the cluster.
 - **Shared configuration across replicas**: Propagate runtime configuration flags or feature toggles to all running instances without a restart or a config-server round-trip.
 - **Leaderless coordination**: Implement soft consensus and coordination patterns (such as work-claiming or token passing) where no single node is a single point of failure.
+- **Ad-Hoc Network**: Leaderless Architecture and Local consistency ensures that even in Ad-hoc setup and partially isolated setup, state distribution persists consitently.  
 
 Mesh is intentionally minimal. It does not replace a database for durable storage, and it does not guarantee strong consistency. If your use case requires strict linearisability or persistence across full cluster restarts, a dedicated store is a better fit.
 
