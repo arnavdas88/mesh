@@ -28,12 +28,6 @@ CONFIG = {
 SLEEP = 1
 URLS_TO_JOIN = os.getenv("JOIN_TO") or None
 
-
-logging.basicConfig(
-    level=logging.INFO,
-    format='\t%(levelname)s   %(message)s',
-    handlers=[logging.StreamHandler(sys.stdout)]
-)
 logger  = logging.getLogger()
 
 @contextlib.asynccontextmanager
