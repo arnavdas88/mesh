@@ -144,7 +144,7 @@ test = [
 # maintainers, and where to support the project financially. The key is
 # what's used to render the link text on PyPI.
 [project.urls]
-Homepage = "https://mesh.iamarnav.com/mesh/"
-Documentation = "https://mesh.iamarnav.com/mesh/"
+Homepage = "https://mesh.iamarnav.com/"
+Documentation = "https://mesh.iamarnav.com/"
 Repository = "https://github.com/arnavdas88/mesh/"
 Issues = "https://github.com/arnavdas88/mesh/issues"

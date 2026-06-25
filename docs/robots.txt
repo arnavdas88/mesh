@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://mesh.iamarnav.com/mesh/sitemap.xml
+Sitemap: https://mesh.iamarnav.com/sitemap.xml
