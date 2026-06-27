@@ -1,5 +1,7 @@
 site_name: Mesh Documentation
 site_url: https://mesh.iamarnav.com/
+site_description: Mesh is a distributed data store for FastAPI. It enables multiple independent FastAPI services instances to form an ad-hoc cluster and maintain a shared, eventually consistent state store in a leaderless, weakly coupled architecture.
+site_author: Arnav Das
 
 theme:
   name: material

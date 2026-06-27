@@ -5,6 +5,13 @@ description: How to quickly get mesh up and running with your FastApi service
 repo_name: mesh
 author: Arnav Das
 repo_url: https://github.com/arnavdas88/mesh/
+
+meta:
+  - name: keywords
+    content: mesh, fastapi, mkdocs, distributed system, leaderless, cloud native, quick start
+  - name: robots
+    content: index, follow
+
 hide:
   - navigation
 ---
