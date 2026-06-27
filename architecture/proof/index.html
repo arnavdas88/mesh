@@ -1,0 +1,1484 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Mesh is a distributed data store for FastAPI. It enables multiple independent FastAPI services instances to form an ad-hoc cluster and maintain a shared, eventually consistent state store in a leaderless, weakly coupled architecture.">
+      
+      
+        <meta name="author" content="Arnav Das">
+      
+      
+        <link rel="canonical" href="https://mesh.iamarnav.com/architecture/proof/">
+      
+      
+        <link rel="prev" href="../protocol/">
+      
+      
+        <link rel="next" href="../../autoapi/src/mesh/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Proof - Mesh Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config","G-TK7G4XHYFL"),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","G-TK7G4XHYFL",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=G-TK7G4XHYFL",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
+  
+    <script>if("undefined"!=typeof __md_analytics){var consent=__md_get("__consent");consent&&consent.analytics&&__md_analytics()}</script>
+  
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="white">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#definitions" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Mesh Documentation" class="md-header__button md-logo" aria-label="Mesh Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Mesh Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Proof
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../quick-start/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Quick Start
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../overview/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../autoapi/src/mesh/" class="md-tabs__link">
+          
+  
+  
+  User Guide
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../license/" class="md-tabs__link">
+          
+  
+  
+  About
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Mesh Documentation" class="md-nav__button md-logo" aria-label="Mesh Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Mesh Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quick-start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Proof
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Proof
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#definitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Definitions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#theorem-soundness-monotonicity-and-eventual-consistency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Theorem (Soundness, Monotonicity, and Eventual Consistency)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Theorem (Soundness, Monotonicity, and Eventual Consistency)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#p1-append-only-monotonicity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        P1 - Append-Only Monotonicity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#p2-global-uniqueness-of-commit-identifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        P2 - Global Uniqueness of Commit Identifiers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#p3-idempotency-and-commutativity-of-try_accept" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        P3 - Idempotency and Commutativity of try_accept
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#p4-materialization-correctness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        P4 - Materialization Correctness
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#p5-merge-sanity-key-preservation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        P5 - Merge Sanity (Key Preservation)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#p6-convergence-eventual-consistency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        P6 - Convergence (Eventual Consistency)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#p7-conflict-policy-monotonicity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        P7 - Conflict Policy Monotonicity
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#corollary-crdt-classification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Corollary (CRDT Classification)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    User Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1" id="__nav_4_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    References
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_1" id="__nav_4_1_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    src
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    src
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_1_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_1_1" id="__nav_4_1_1_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    mesh
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_1_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_1_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    mesh
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../autoapi/src/mesh/callback/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    callback
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../autoapi/src/mesh/monotonic_dict/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    monotonic_dict
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../autoapi/src/mesh/node/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    node
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../autoapi/src/mesh/transport/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    transport
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../autoapi/src/mesh/utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    utils
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    About
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#definitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Definitions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#theorem-soundness-monotonicity-and-eventual-consistency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Theorem (Soundness, Monotonicity, and Eventual Consistency)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Theorem (Soundness, Monotonicity, and Eventual Consistency)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#p1-append-only-monotonicity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        P1 - Append-Only Monotonicity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#p2-global-uniqueness-of-commit-identifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        P2 - Global Uniqueness of Commit Identifiers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#p3-idempotency-and-commutativity-of-try_accept" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        P3 - Idempotency and Commutativity of try_accept
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#p4-materialization-correctness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        P4 - Materialization Correctness
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#p5-merge-sanity-key-preservation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        P5 - Merge Sanity (Key Preservation)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#p6-convergence-eventual-consistency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        P6 - Convergence (Eventual Consistency)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#p7-conflict-policy-monotonicity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        P7 - Conflict Policy Monotonicity
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#corollary-crdt-classification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Corollary (CRDT Classification)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+  <h1>Proof</h1>
+
+<h2 id="definitions">Definitions</h2>
+<p>Let a <em>commit log</em> <span class="arithmatex">\(L = [(c_1, o_1), (c_2, o_2), \ldots, (c_n, o_n)]\)</span> be an ordered sequence of pairs where each <span class="arithmatex">\(c_i \in \mathcal{U}\)</span> is a UUID4 hex string (globally unique identifier) and each <span class="arithmatex">\(o_i \in \{\text{set}(k,v),\ \text{del}(k),\ \text{update}(M),\ \text{clear}\}\)</span> is an operation.</p>
+<p>Let <span class="arithmatex">\(\mathcal{M}(L)\)</span> denote the <em>materialization</em> of log <span class="arithmatex">\(L\)</span>: the map produced by replaying <span class="arithmatex">\(L\)</span> from left to right, where <code>set(k,v)</code> writes <span class="arithmatex">\(k \mapsto v\)</span>, <code>del(k)</code> removes <span class="arithmatex">\(k\)</span>, <code>update(M)</code> writes all pairs in <span class="arithmatex">\(M\)</span>, and <code>clear</code> empties the map.</p>
+<p>Let <span class="arithmatex">\(\mathcal{C}(L) = \{c_i \mid (c_i, o_i) \in L\}\)</span> denote the <em>commit set</em> of <span class="arithmatex">\(L\)</span>.</p>
+<p>Let a <em>node</em> <span class="arithmatex">\(n_i\)</span> hold a log <span class="arithmatex">\(L_i\)</span> and be connected to a set of peers. Define the <em>conflict policy</em> <span class="arithmatex">\(\pi \in \{\text{accept},\ \text{merge},\ \text{warn},\ \text{exception},\ \text{ignore}\}\)</span>.</p>
+<h2 id="theorem-soundness-monotonicity-and-eventual-consistency">Theorem (Soundness, Monotonicity, and Eventual Consistency)</h2>
+<p>Let <span class="arithmatex">\(\mathcal{N} = \{n_1, n_2, \ldots, n_k\}\)</span> be a set of mesh nodes, each holding a commit log <span class="arithmatex">\(L_i\)</span>, communicating via the <code>sync_up</code> / <code>sync_up_recv</code> protocol with conflict policy <span class="arithmatex">\(\pi \in \{\text{accept},\ \text{merge}\}\)</span>. Then the following properties hold jointly:</p>
+<h3 id="p1-append-only-monotonicity">P1 - Append-Only Monotonicity</h3>
+<p>For any node <span class="arithmatex">\(n_i\)</span> and any two times <span class="arithmatex">\(t &lt; t'\)</span>: <span class="arithmatex">\(\mathcal{C}(L_i^t) \subseteq \mathcal{C}(L_i^{t'})\)</span>
+No commit is ever removed from a log. Every write operation (<code>__setitem__</code>, <code>__delitem__</code>, <code>update</code>, <code>clear</code>) appends exactly one new entry with a fresh UUID to <span class="arithmatex">\(L_i\)</span>, and <code>try_accept</code> / <code>merge</code> only append; they never delete.</p>
+<h3 id="p2-global-uniqueness-of-commit-identifiers">P2 - Global Uniqueness of Commit Identifiers</h3>
+<p>For any two distinct write events <span class="arithmatex">\(e_1 \neq e_2\)</span> occurring on any nodes <span class="arithmatex">\(n_i, n_j \in \mathcal{N}\)</span> (possibly <span class="arithmatex">\(i = j\)</span>) at any times:
+<span class="arithmatex">\(c_{e_1} \neq c_{e_2} \quad \text{with overwhelming probability}\)</span>
+since each <span class="arithmatex">\(c \leftarrow \texttt{uuid4().hex}\)</span> is drawn from a <span class="arithmatex">\(2^{122}\)</span>-element space.</p>
+<h3 id="p3-idempotency-and-commutativity-of-try_accept">P3 - Idempotency and Commutativity of <code>try_accept</code></h3>
+<p>Let <span class="arithmatex">\(\oplus\)</span> denote the <code>try_accept</code> merge operator. For any logs <span class="arithmatex">\(L_a, L_b, L_c\)</span>:
+<span class="arithmatex">\(L_a \oplus L_a = L_a \qquad \text{(idempotency)}\)</span>
+<span class="arithmatex">\(\mathcal{C}(L_a \oplus L_b) = \mathcal{C}(L_a) \cup \mathcal{C}(L_b) \qquad \text{(set-union on commit IDs)}\)</span>
+<span class="arithmatex">\(\mathcal{C}((L_a \oplus L_b) \oplus L_c) = \mathcal{C}(L_a \oplus (L_b \oplus L_c)) \qquad \text{(associativity)}\)</span></p>
+<h3 id="p4-materialization-correctness">P4 - Materialization Correctness</h3>
+<p>For any log <span class="arithmatex">\(L\)</span> and any cursor position <span class="arithmatex">\(j \leq |L|\)</span>, let <span class="arithmatex">\(L_{[j:]}\)</span> denote the suffix of <span class="arithmatex">\(L\)</span> from position <span class="arithmatex">\(j\)</span>. Then:
+<span class="arithmatex">\(\mathcal{M}(L) = \mathcal{M}(L_{[0:j]}) \oplus_{\text{replay}} \mathcal{M}(L_{[j:]})\)</span>
+where <span class="arithmatex">\(\oplus_{\text{replay}}\)</span> denotes sequential application. That is, the incremental cursor-based replay in <code>_materialize</code> produces the same result as a full replay from the beginning, for any valid cursor position.</p>
+<h3 id="p5-merge-sanity-key-preservation">P5 - Merge Sanity (Key Preservation)</h3>
+<p>Let <span class="arithmatex">\(L_{\text{merged}} = \text{merge}(L_a, L_b)\)</span> or <span class="arithmatex">\(L_{\text{merged}} = \text{accept}(L_a, L_b)\)</span>. Then <code>_check</code> guarantees:
+<span class="arithmatex">\(\forall k \in \text{dom}(\mathcal{M}(L_a)) \cup \text{dom}(\mathcal{M}(L_b)) : k \in \text{dom}(\mathcal{M}(L_{\text{merged}}))\)</span>
+No key present in either input replica is absent from the merged result. If this condition fails, the merge is rejected and <span class="arithmatex">\(L_i\)</span> is left unchanged.</p>
+<h3 id="p6-convergence-eventual-consistency">P6 - Convergence (Eventual Consistency)</h3>
+<p>Assume the network is eventually reliable (every message is eventually delivered). After any finite sequence of write operations with no further writes, and with <span class="arithmatex">\(\pi \in \{\text{accept},\ \text{merge}\}\)</span>:</p>
+<p><span class="arithmatex">\(\exists\, T : \forall\, t &gt; T,\ \forall\, n_i, n_j \in \mathcal{N} : \mathcal{M}(L_i^t) = \mathcal{M}(L_j^t)\)</span></p>
+<p><em>Proof sketch:</em></p>
+<ul>
+<li>By <span class="arithmatex">\(P1\)</span> <span class="arithmatex">\(|\mathcal{C}(L_i)|\)</span> is non-decreasing and bounded above by $\left|\bigcup_j \mathcal{C}(L_j)\right</li>
+<li>Each <code>sync_up_recv</code> invocation with status <code>ahead</code> applies <code>try_accept</code>, strictly increasing <span class="arithmatex">\(|\mathcal{C}(L_i)|\)</span> by at least 1 (by <span class="arithmatex">\(P2\)</span>) no collision)</li>
+<li>Each <code>sync_up_recv</code> invocation with status <code>divergent</code> under <code>accept</code> applies <code>try_accept</code> (set-union); under <code>merge</code> it additionally appends a single reconciliation <code>update</code> op encoding <span class="arithmatex">\(\mathcal{M}(L_a) \cup_{\text{LWW}} \mathcal{M}(L_b)\)</span>.</li>
+<li>After each merge, the updated node re-broadcasts to all peers via <code>sync_up</code>, propagating the enlarged log.</li>
+<li>Since the commit set is finite and strictly grows toward <span class="arithmatex">\(\bigcup_j \mathcal{C}(L_j^0)\)</span> at each step, the protocol terminates in at most <span class="arithmatex">\(\sum_i |\mathcal{C}(L_i^0)|\)</span> rounds.</li>
+<li>At termination, <span class="arithmatex">\(\mathcal{C}(L_i) = \mathcal{C}(L_j)\)</span> for all <span class="arithmatex">\(i, j\)</span>, and since all nodes replay the same set of operations (with <code>merge</code> having appended a deterministic reconciliation op), <span class="arithmatex">\(\mathcal{M}(L_i) = \mathcal{M}(L_j)\)</span>. <span class="arithmatex">\(\blacksquare\)</span></li>
+</ul>
+<h3 id="p7-conflict-policy-monotonicity">P7 - Conflict Policy Monotonicity</h3>
+<p>The conflict policies form a partial order by the strength of convergence guarantee they provide:</p>
+<p><span class="arithmatex">\(\text{merge} \geq \text{accept} \geq \text{warn} \geq \text{ignore} \geq \text{exception}\)</span></p>
+<p>Only <code>merge</code> and <code>accept</code> satisfy <strong>P6</strong>. <code>warn</code> and <code>ignore</code> preserve  <strong>P1 - P5</strong> locally but do not guarantee globconvergence. <code>exception</code> halts the protocol on divergence.</p>
+<h2 id="corollary-crdt-classification">Corollary (CRDT Classification)</h2>
+<p>Under policy <code>accept</code>, the <code>MonotonicDict</code> with <code>try_accept</code> as its join operator is a <em>state-based CRDT</em> (Conflict-free Replicated Data Type) with join semilattice <span class="arithmatex">\((\mathcal{P}(\mathcal{U}), \subseteq, \cup)\)</span> over commit sets, satisfying the three CRDT laws: commutativity, associativity, and idempotency of the merge function (all established in <strong>P3</strong>). </p>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+      <div class="md-consent" data-md-component="consent" id="__consent" hidden>
+        <div class="md-consent__overlay"></div>
+        <aside class="md-consent__inner">
+          <form class="md-consent__form md-grid md-typeset" name="consent">
+            
+
+
+
+  
+
+<h4>Cookie consent</h4>
+<p>We use cookies to recognize your repeated visits and preferences, as well as to measure the effectiveness of our documentation and whether users find what they're searching for. With your consent, you're helping us to make our documentation better.</p>
+<input class="md-toggle" type="checkbox" id="__settings" checked>
+<div class="md-consent__settings">
+  <ul class="task-list">
+    
+    
+      
+        
+  
+  
+    
+    
+  
+  <li class="task-list-item">
+    <label class="task-list-control">
+      <input type="checkbox" name="analytics" checked>
+      <span class="task-list-indicator"></span>
+      Google Analytics
+    </label>
+  </li>
+
+      
+    
+    
+      
+    
+    
+  </ul>
+</div>
+<div class="md-consent__controls">
+  
+    
+      <button class="md-button md-button--primary">Accept</button>
+    
+    
+    
+  
+</div>
+          </form>
+        </aside>
+      </div>
+      <script>var consent=__md_get("__consent");if(consent)for(var input of document.forms.consent.elements)input.name&&(input.checked=consent[input.name]||!1);else"file:"!==location.protocol&&setTimeout((function(){document.querySelector("[data-md-component=consent]").hidden=!1}),250);var form=document.forms.consent;for(var action of["submit","reset"])form.addEventListener(action,(function(e){if(e.preventDefault(),"reset"===e.type)for(var n of document.forms.consent.elements)n.name&&(n.checked=!1);__md_set("__consent",Object.fromEntries(Array.from(new FormData(form).keys()).map((function(e){return[e,!0]})))),location.hash="",location.reload()}))</script>
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.annotate", "navigation.tabs", "navigation.instant", "navigation.instant.prefetch", "navigation.instant.progress", "navigation.instant.preview"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../assets/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
