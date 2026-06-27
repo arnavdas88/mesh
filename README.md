@@ -91,3 +91,14 @@ $ /usr/bin/env /usr/bin/python3 -m pip install --break-system-packages -e .
 ```bash
 $ docker compose up
 ```
+
+# Roadmap
+
+- [x] Basic Mesh communication
+- [x] Packaging as a python package
+- [x] Documenting the basic usage code
+- [x] Hosting the documentation to be visible
+- [x] Adding callbacks to data change
+- [ ] Video illustration of the state synchronization
+- [ ] Adding auto-instrumentation
+- [ ] Adding more examples
