@@ -73,6 +73,7 @@ extra:
     title: Cookie consent
     actions:
       - accept
+      - reject
     description: >- 
       We use cookies to recognize your repeated visits and preferences, as well
       as to measure the effectiveness of our documentation and whether users
