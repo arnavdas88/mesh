@@ -3,6 +3,7 @@ websockets
 pydantic
 pytest-asyncio
 pytest
+zensical
 mkdocs
 mkdocs-material
 mkdocstrings[python] 

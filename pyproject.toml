@@ -88,6 +88,7 @@ dependencies = [
     "fastapi[standard]",
     "websockets",
     "pydantic",
+    "mkdocstrings-python>=2.0.5",
 ]
 
 
@@ -122,6 +123,7 @@ classifiers = [
 # https://packaging.python.org/en/latest/specifications/dependency-specifiers/#extras
 [project.optional-dependencies]
 docs = [
+  "zensical",
   "mkdocs",
   "mkdocs-material[imaging]",
   "mkdocstrings[python]",
@@ -148,3 +150,8 @@ Homepage = "https://mesh.iamarnav.com/"
 Documentation = "https://mesh.iamarnav.com/"
 Repository = "https://github.com/arnavdas88/mesh/"
 Issues = "https://github.com/arnavdas88/mesh/issues"
+
+[dependency-groups]
+dev = [
+    "zensical>=0.0.51",
+]
