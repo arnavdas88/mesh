@@ -1,0 +1,12 @@
+[project]
+name = "mesh-demo"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]>=0.141.0",
+    "mesh",
+    "requests>=2.34.2",
+]
+
+[tool.uv.sources]
+mesh = { git = "https://github.com/arnavdas88/mesh", branch = "main" }
