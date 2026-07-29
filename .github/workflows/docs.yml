@@ -34,6 +34,7 @@ jobs:
       - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV 
       - name: Install the project
         run: uv sync --locked --all-extras --dev
+        run: uv pip install -r pyproject.toml --all-extras
       - name: Build the documentation
         run: zensical build --clean 
       - uses: actions/upload-pages-artifact@v5
