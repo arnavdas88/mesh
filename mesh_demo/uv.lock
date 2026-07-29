@@ -467,9 +467,24 @@ wheels = [
 ]
 
 [[package]]
-name = "mesh"
-version = "2026.0.0"
-source = { git = "https://github.com/arnavdas88/mesh?branch=main#4806464e7c07cadea269a1d6eb2917d77dd8a185" }
+name = "mesh-demo"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "fastapi", extra = ["standard"] },
+    { name = "meshd" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "fastapi", extras = ["standard"], specifier = ">=0.141.1" },
+    { name = "meshd", specifier = ">=2026.0.1" },
+]
+
+[[package]]
+name = "meshd"
+version = "2026.0.1"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },
     { name = "mkdocstrings-python" },
@@ -478,20 +493,9 @@ dependencies = [
     { name = "pytest-asyncio" },
     { name = "websockets" },
 ]
-
-[[package]]
-name = "mesh-demo"
-version = "0.1.0"
-source = { virtual = "." }
-dependencies = [
-    { name = "fastapi", extra = ["standard"] },
-    { name = "mesh" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "fastapi", extras = ["standard"], specifier = ">=0.141.1" },
-    { name = "mesh", git = "https://github.com/arnavdas88/mesh?branch=main" },
+sdist = { url = "https://files.pythonhosted.org/packages/c5/8c/8d6aea696853df30ad2e360a17f695ea18cc5e1b8cdac224767cd9610a57/meshd-2026.0.1.tar.gz", hash = "sha256:efea0e4451f00c6a0bfbac934ae3f55388bcdffc2981e90ded96e88bee9e1fd1", size = 34206, upload-time = "2026-07-29T23:26:53.105Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/0d/e1/068ca4781185153858d1bef03ca0da4ae827fdbd33b409a92cd475bcfb95/meshd-2026.0.1-py3-none-any.whl", hash = "sha256:83ea300905afee94d3969361a7d06a575a03126e77e5375c0bf99651fa56344e", size = 22506, upload-time = "2026-07-29T23:26:51.847Z" },
 ]
 
 [[package]]

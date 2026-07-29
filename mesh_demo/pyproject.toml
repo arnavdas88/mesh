@@ -4,11 +4,8 @@ version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]>=0.141.1",
-    "mesh",
+    "meshd>=2026.0.1",
 ]
-
-[tool.uv.sources]
-mesh = { git = "https://github.com/arnavdas88/mesh", branch = "main" }
 
 [tool.fastapi]
 entrypoint = "main:app"

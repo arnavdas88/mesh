@@ -5,8 +5,8 @@ import asyncio
 import contextlib
 
 from fastapi import FastAPI, Body
-from mesh.node import Node
-from mesh.monotonic_dict import Op
+from meshd.node import Node
+from meshd.monotonic_dict import Op
 
 NAME = socket.gethostname()
 RANDOM_SUFFIX = random.randint(1000, 9999)

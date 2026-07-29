@@ -2,7 +2,7 @@ import socket
 import asyncio
 
 from fastapi import FastAPI, Body
-from mesh.node import Node
+from meshd.node import Node
 
 # NAME = socket.gethostname()
 NAME = "node1"  # You can change this to a unique name for each node
