@@ -224,7 +224,7 @@ class Node(BaseMeshNode):
             return {
                 "name": self.name,
                 "servers": self.app.servers,
-                "version": version("mesh"),
+                "version": version("meshd"),
                 "action_on_conflict": self.action_on_conflict,
                 "domain": request.base_url.hostname,
                 "docs_url": urljoin(base_url, self.app.docs_url) if self.app.docs_url else None,
