@@ -6,7 +6,7 @@ import httpx
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 
-from mesh.node import Node
+from meshd.node import Node
 
 
 # -------------------------------------------------

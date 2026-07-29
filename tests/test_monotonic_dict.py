@@ -1,5 +1,5 @@
-from mesh.monotonic_dict import MonotonicDict
-from mesh.utils import analyze_commit_diff
+from meshd.monotonic_dict import MonotonicDict
+from meshd.utils import analyze_commit_diff
 from enum import StrEnum
 import asyncio
 import pytest

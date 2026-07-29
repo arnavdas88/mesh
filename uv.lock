@@ -768,8 +768,8 @@ wheels = [
 ]
 
 [[package]]
-name = "mesh"
-version = "2026.0.0"
+name = "meshd"
+version = "2026.0.1"
 source = { editable = "." }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },

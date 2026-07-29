@@ -63,7 +63,7 @@ import socket
 import asyncio
 
 from fastapi import FastAPI, Body
-from mesh.node import Node
+from meshd.node import Node
 
 NAME = socket.gethostname()
 

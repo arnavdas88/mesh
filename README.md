@@ -11,7 +11,7 @@
 
 ## Usage
 ```py
-from mesh.node import Node
+from meshd.node import Node
 
 app = FastAPI()
 node = Node(
@@ -42,7 +42,7 @@ import asyncio
 import contextlib
 
 from fastapi import FastAPI
-from mesh.node import Node
+from meshd.node import Node
 
 NAME = socket.gethostname()
 

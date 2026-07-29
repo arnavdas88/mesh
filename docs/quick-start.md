@@ -43,7 +43,7 @@ Create a file called `node_a.py`. Import FastAPI and Node, instantiate both, and
 
 ```py
 from fastapi import FastAPI, Body
-from mesh.node import Node
+from meshd.node import Node
 
 app = FastAPI()
 node = Node(name="node-a", app=app, action_on_conflict="merge")
@@ -68,7 +68,7 @@ import asyncio
 import contextlib
 
 from fastapi import FastAPI
-from mesh.node import Node
+from meshd.node import Node
 
 SLEEP = 1
 

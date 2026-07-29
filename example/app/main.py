@@ -6,7 +6,7 @@ import contextlib
 import logging
 
 from fastapi import FastAPI
-from mesh.node import Node
+from meshd.node import Node
 
 from .utils import get_internal_data
 
