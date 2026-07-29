@@ -187,12 +187,12 @@ class MonotonicDict(MutableMapping, Callback):
 
         return _forked_mdict
 
-    def accept(self, incoming_data, from_node = None):
+    def accept(self, incoming_data, from_node = None, with_sanity_check=False):
         # Try Merge
         merged_data = try_accept(self, incoming_data)
 
         # Validate data sanity
-        is_sane = _check(merged_data, self, incoming_data)
+        is_sane = _check(merged_data, self, incoming_data) if with_sanity_check else True
 
         if is_sane:
             # Find new operations that were added  
@@ -209,7 +209,7 @@ class MonotonicDict(MutableMapping, Callback):
             self._trigger_callbacks_for_ops(new_ops, src_node=from_node)
         return is_sane
     
-    def merge(self, incoming_data, from_node = None):
+    def merge(self, incoming_data, from_node = None, with_sanity_check=False):
       
         # Track incoming operations
         existing_commits = set(self._commit_keys)  
@@ -229,7 +229,7 @@ class MonotonicDict(MutableMapping, Callback):
         merged_monotonic_dict._append_op(Op("update", (merged_data, )))
 
         # Validate data sanity
-        is_sane = _check(merged_monotonic_dict, self, incoming_data)
+        is_sane = _check(merged_monotonic_dict, self, incoming_data) if with_sanity_check else True
         if is_sane:
 
             # Trigger callbacks for incoming operations and the final update  

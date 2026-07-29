@@ -97,12 +97,12 @@ class BaseMeshNode:
                 case "accept":
                     warnings.warn(analysis.message)
                     # logger.warning(analysis.message, source=self.name)
-                    self.data.accept(incoming_data, from_node=sender)
+                    self.data.accept(incoming_data, from_node=sender, with_sanity_check=True)
                     peers.append(sender)
                 case "merge":
                     warnings.warn(analysis.message)
                     # logger.warning(analysis.message, source=self.name)
-                    self.data.merge(incoming_data, from_node=sender)
+                    self.data.merge(incoming_data, from_node=sender, with_sanity_check=True)
                     peers.append(sender)
                 case "warn":
                     warnings.warn(analysis.message)

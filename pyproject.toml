@@ -89,6 +89,8 @@ dependencies = [
     "websockets",
     "pydantic",
     "mkdocstrings-python>=2.0.5",
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
 ]
 
 

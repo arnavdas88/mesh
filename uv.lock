@@ -775,6 +775,8 @@ dependencies = [
     { name = "fastapi", extra = ["standard"] },
     { name = "mkdocstrings-python" },
     { name = "pydantic" },
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
     { name = "websockets" },
 ]
 
@@ -807,7 +809,9 @@ requires-dist = [
     { name = "mkdocstrings-python", specifier = ">=2.0.5" },
     { name = "pngquant", marker = "extra == 'docs'" },
     { name = "pydantic" },
+    { name = "pytest", specifier = ">=9.1.1" },
     { name = "pytest", marker = "extra == 'test'" },
+    { name = "pytest-asyncio", specifier = ">=1.4.0" },
     { name = "pytest-asyncio", marker = "extra == 'test'" },
     { name = "websockets" },
     { name = "zensical", marker = "extra == 'docs'" },

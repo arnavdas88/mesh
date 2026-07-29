@@ -67,7 +67,7 @@ async def node_server(name: str, port: int, join_urls=None, config = {}):
     @app.get("/")
     async def root():
         node_lists = await node.get_data("__node_lists__", default=[])
-        return {"name": name, "data": node_lists}
+        return {"name": name, "node_lists": node_lists, "data": node.data.to_dict()}
 
     server = UvicornTestServer(app, port=port)
     await server.start()
@@ -137,7 +137,6 @@ async def test_callbacks():
             except StopAsyncIteration:
                 pass
 
-# @pytest.mark.asyncio
 async def test_partition_merge_and_convergence():
 
     fixtures = []
@@ -272,6 +271,72 @@ async def test_partition_merge_and_convergence():
                 assert expected in data, (
                     f"{expected} missing from {node.name}"
                 )
+
+    finally:
+        # -------------------------------------------------
+        # CLEANUP
+        # -------------------------------------------------
+
+        for fixture in reversed(fixtures):
+            try:
+                await fixture.__anext__()
+            except StopAsyncIteration:
+                pass
+
+
+
+async def test_basic_operations():
+
+    fixtures = []
+
+    try:
+
+        # Create 3 nodes in a chain: node2 joins node1, node3 joins node1  
+        node1_fixture = node_server("Node1", 7000)
+        node1 = await node1_fixture.__anext__()
+
+        fixtures.append(node1_fixture)  
+          
+        node2_fixture = node_server("Node2", 7001, ["ws://127.0.0.1:7000/mesh"])  
+        node2 = await node2_fixture.__anext__()  
+        fixtures.append(node2_fixture)
+
+        await node2.put_data({"key": "value"})
+        await asyncio.sleep(5)
+
+        assert await node1.get_data("key") == "value"
+        assert await node2.get_data("key") == "value"
+
+        node3_fixture = node_server("Node3", 7002, ["ws://127.0.0.1:7000/mesh"])  
+        node3 = await node3_fixture.__anext__()  
+        fixtures.append(node3_fixture)  
+        await asyncio.sleep(5)
+
+        assert await node3.get_data("key") == "value"
+
+        await node3.put_data({"random_key_1": "Some random data!"})
+        await asyncio.sleep(5)
+
+        assert await node1.get_data("random_key_1") == "Some random data!"
+        assert await node2.get_data("random_key_1") == "Some random data!"
+        assert await node3.get_data("random_key_1") == "Some random data!"
+
+        await node3.pop_data("key")
+        await asyncio.sleep(5)
+
+        assert await node1.get_data("key") == None
+        assert await node2.get_data("key") == None
+        assert await node3.get_data("key") == None
+
+        await node3.put_data({"random_key_2": "Some random data!"})
+        await asyncio.sleep(7)
+
+        assert await node1.get_data("random_key_2") == "Some random data!"
+        assert await node2.get_data("random_key_2") == "Some random data!"
+        assert await node3.get_data("random_key_2") == "Some random data!"
+
+        pass
+
 
     finally:
         # -------------------------------------------------
