@@ -59,25 +59,43 @@ The OpenAPI Swagger Docs of the playground can be found at [mesh-demo.fastapiclo
 Any server (`local` or `remote`) can connect and be a part of the cluster by connecting to the `join_url` using the `node.join([join_url])` function.
 
 ```py
+import uvicorn, asyncio
+
 from fastapi import FastAPI, Body
 from meshd.node import Node
 
 NAME = ...
 
-app = FastAPI(title=f"Test Server {NAME}", )
+async def lifespan(app: FastAPI):
+    # Startup: wait briefly, then join node-a and sync
+    await node.sync_up()
+    await asyncio.sleep(1)
+    await node.join([join_url])
+    await node.sync_up()
+    await asyncio.sleep(1)
+
+    # Register this node in the shared state
+    await node.put_data({f"__node_{NAME}__": {"name": NAME, "status": "up"}})
+
+    yield
+
+    # Shutdown: remove self from shared state and propagate
+    await node.pop_data(f"__node_{NAME}__")
+    await asyncio.sleep(1)
+    await node.sync_up()
+
+app = FastAPI(title=f"Test Server {NAME}", lifespan=lifespan)
 node = Node(name=NAME, app=app, action_on_conflict="merge") 
 
 join_url = "wss://mesh-demo.fastapicloud.dev/meshd" # (1)!
-
-await node.join([join_url]) 
-await node.sync_up()
-await asyncio.sleep(2)  # Wait some time for the data to synchronize
 
 @app.get("/")
 async def root():
     internal_data = node.data.to_dict() 
     return {"name": NAME, "status": "running", "internal_data": internal_data}
 
+if __name__ == "__main__":
+    uvicorn.run(app, host="localhost", port=8001)
 ```
 
 1. This is the joining url of the playground node. Connecting to this url, will make your code, join the playgrounds cluster. You can find the url at [mesh-demo.fastapicloud.dev/meshd-info](https://mesh-demo.fastapicloud.dev/meshd-info)
