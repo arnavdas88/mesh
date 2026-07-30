@@ -11,7 +11,7 @@ from typing import Dict, List, Optional
 from importlib.metadata import version
 
 from .monotonic_dict import MonotonicDict
-from .utils import analyze_commit_diff
+from .utils import analyze_commit_diff, convert_to_websocket
 from .transport import (
     WebSocketProtocol,
     serialize_monotonic_dict,
@@ -228,7 +228,7 @@ class Node(BaseMeshNode):
                 "action_on_conflict": self.action_on_conflict,
                 "domain": request.base_url.hostname,
                 "docs_url": urljoin(base_url, self.app.docs_url) if self.app.docs_url else None,
-                "join_url": urljoin(base_url, self.endpoint),
+                "join_url": convert_to_websocket(urljoin(base_url, self.endpoint)),
             }
 
     # ------------------------------------------------------------------

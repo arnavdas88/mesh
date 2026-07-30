@@ -1,7 +1,28 @@
 import enum
 from dataclasses import dataclass
+from urllib.parse import urlparse, urlunparse
 
 from .monotonic_dict import MonotonicDict
+
+
+def convert_to_websocket(url: str) -> str:
+    # 1. Parse the URL into components
+    parsed = urlparse(url)
+    
+    # 2. Define the protocol mapping
+    scheme_mapping = {
+        'http': 'ws',
+        'https': 'wss'
+    }
+    
+    # 3. Get the new scheme (keep original if it's already ws/wss or not http/s)
+    new_scheme = scheme_mapping.get(parsed.scheme, parsed.scheme)
+    
+    # 4. Rebuild the URL with the new scheme
+    # parsed._replace() creates a modified copy of the NamedTuple
+    updated_parsed = parsed._replace(scheme=new_scheme)
+    
+    return urlunparse(updated_parsed)
 
 def connect_all(node_lists: list):
     for node_a in node_lists:
