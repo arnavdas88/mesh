@@ -20,7 +20,7 @@ The OpenAPI Swagger Docs of the playground can be found at [mesh-demo.fastapiclo
 ??? note "Surfing on the demo"
 
     The playground hosts its index at [mesh-demo.fastapicloud.dev](https://mesh-demo.fastapicloud.dev/). A 
-    curl command returns the content served at that endpoint.
+    curl command will show the content served at that endpoint.
 
     ```{.bash .no-copy .select}
     $ curl -X 'GET' 'https://mesh-demo.fastapicloud.dev/' -H 'accept: application/json' | jq
@@ -56,7 +56,7 @@ The OpenAPI Swagger Docs of the playground can be found at [mesh-demo.fastapiclo
     4. Shows the Swagger OpenAPI documentation url of the playground.
     5. Shows the URL of the playground to which, other nodes can connect to, in order to join the cluster.
 
-Any server (`local` or `remote`) can connect and be a part of the cluster by connecting to the `join_url` using the `node.join([join_url])` function.
+Any server (`local` or `remote`) can connect to the `join_url` and be a part of the cluster using the `node.join([join_url])` function.
 
 ```py
 import uvicorn, asyncio
@@ -98,4 +98,4 @@ if __name__ == "__main__":
     uvicorn.run(app, host="localhost", port=8001)
 ```
 
-1. This is the joining url of the playground node. Connecting to this url, will make your code, join the playgrounds cluster. You can find the url at [mesh-demo.fastapicloud.dev/meshd-info](https://mesh-demo.fastapicloud.dev/meshd-info)
+1. This is the joining url of the playground node. Connecting to this url, will make your FastAPI server, join the playground's cluster. The `join_url` can be found at [mesh-demo.fastapicloud.dev/meshd-info](https://mesh-demo.fastapicloud.dev/meshd-info)
