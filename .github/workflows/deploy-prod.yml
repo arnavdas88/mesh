@@ -11,6 +11,10 @@ jobs:
       - name: FastAPI Deploy
         run: uv run fastapi deploy
         working-directory: ./mesh_demo
+        # Dedicated environments with protections for publishing are strongly recommended.
+        # For more information, see: https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment#deployment-protection-rules
+        environment:
+          name: fastapicloud
         env:
           FASTAPI_CLOUD_TOKEN: ${{ secrets.FASTAPI_CLOUD_TOKEN }}
           FASTAPI_CLOUD_APP_ID: ${{ secrets.FASTAPI_CLOUD_APP_ID }}
