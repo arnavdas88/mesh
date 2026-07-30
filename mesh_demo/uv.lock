@@ -472,18 +472,20 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },
+    { name = "fastapi-cloud-cli" },
     { name = "meshd" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "fastapi", extras = ["standard"], specifier = ">=0.141.1" },
+    { name = "fastapi-cloud-cli", specifier = ">=0.23.0" },
     { name = "meshd", specifier = ">=2026.0.1" },
 ]
 
 [[package]]
 name = "meshd"
-version = "2026.0.1"
+version = "2026.0.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },
@@ -493,9 +495,9 @@ dependencies = [
     { name = "pytest-asyncio" },
     { name = "websockets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c5/8c/8d6aea696853df30ad2e360a17f695ea18cc5e1b8cdac224767cd9610a57/meshd-2026.0.1.tar.gz", hash = "sha256:efea0e4451f00c6a0bfbac934ae3f55388bcdffc2981e90ded96e88bee9e1fd1", size = 34206, upload-time = "2026-07-29T23:26:53.105Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e6/73/640136f2949e2e026d7dc1155bb219e7f8bac9a69b117a490a1ef61a7573/meshd-2026.0.2.tar.gz", hash = "sha256:893708b23eaf591c204585f04ccacc6e1156d564a816f11cc095a85201e1fd68", size = 34210, upload-time = "2026-07-29T23:46:57.551Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0d/e1/068ca4781185153858d1bef03ca0da4ae827fdbd33b409a92cd475bcfb95/meshd-2026.0.1-py3-none-any.whl", hash = "sha256:83ea300905afee94d3969361a7d06a575a03126e77e5375c0bf99651fa56344e", size = 22506, upload-time = "2026-07-29T23:26:51.847Z" },
+    { url = "https://files.pythonhosted.org/packages/cb/74/5c595c90d4a236a7a2af5560cb0cbb6795b0347c8fdd9bd3efea21498b37/meshd-2026.0.2-py3-none-any.whl", hash = "sha256:7f89ae1d9a520c591850ae4b3c2c35f3fa742ff540b14e9feaf5d62edb00f9ee", size = 22509, upload-time = "2026-07-29T23:46:56.382Z" },
 ]
 
 [[package]]
