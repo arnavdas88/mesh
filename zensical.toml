@@ -331,7 +331,7 @@ toggle.name = "Switch to light mode"
 
 [project.extra.analytics]
 provider = "google"
-property = "G-TK7G4XHYFL"
+property = "GT-KV59VLJN"
 
 # ----------------------------------------------------------------------------
 # In this section you can configure the Markdown extensions that are used when
