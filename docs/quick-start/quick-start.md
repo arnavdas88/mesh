@@ -11,9 +11,6 @@ meta:
     content: mesh, meshd, fastapi, mkdocs, distributed system, leaderless, cloud native, quick start
   - name: robots
     content: index, follow
-
-hide:
-  - navigation
 ---
 
 # Run a Two-Node Meshd Cluster in Minutes

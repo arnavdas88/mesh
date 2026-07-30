@@ -55,7 +55,11 @@ Copyright &copy; 2026 The authors
 # ]
 nav = [
     {"Home" = "index.md"},
-    {"Quick Start" = "quick-start.md"},
+    {"Quick Start" = [
+        "quick-start/quick-start.md",
+        "quick-start/playground.md"
+      ]
+    },
     { "Architecture" = [
             "architecture/overview.md",
             "architecture/protocol.md",
