@@ -11,7 +11,7 @@ from meshd.monotonic_dict import Op
 NAME = socket.gethostname()
 RANDOM_SUFFIX = random.randint(1000, 9999)
 SLUG_NAME = f"{NAME.lower().replace('.', '_')}_{RANDOM_SUFFIX}"  # Replace dots with underscores for valid identifiers
-JOIN_URLS = [ "ws://localhost:8000/mesh" ]
+JOIN_URLS = [ "wss://mesh-demo.fastapicloud.dev/mesh" ]
 
 SLEEP = 1
 
