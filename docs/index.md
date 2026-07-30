@@ -1,6 +1,6 @@
 ---
-title: Mesh
-description: Mesh is a distributed data store for FastAPI. It enables multiple independent FastAPI services instances to form an ad-hoc cluster and maintain a shared, eventually consistent state store in a leaderless, weakly coupled architecture.
+title: Meshd
+description: Meshd is a distributed data store for FastAPI. It enables multiple independent FastAPI services instances to form an ad-hoc cluster and maintain a shared, eventually consistent state store in a leaderless, weakly coupled architecture.
 
 repo_name: meshd
 author: Arnav Das
@@ -8,7 +8,7 @@ repo_url: https://github.com/arnavdas88/meshd/
 
 meta:
   - name: keywords
-    content: meshd, meshd, fastapi, mkdocs, distributed system, leaderless, cloud native
+    content: mesh, meshd, fastapi, mkdocs, distributed system, leaderless, cloud native
   - name: robots
     content: index, follow
 
@@ -17,35 +17,35 @@ hide:
 ---
 
 
-<!-- ![Mesh Illustration](assets/illustration-1.png){ align=left } -->
+<!-- ![Meshd Illustration](assets/illustration-1.png){ align=left } -->
 <img src="assets/illustration-1.png" width="400px" align="left">
 
-# Welcome to Mesh
+# Welcome to Meshd
 
-Mesh is a leaderless, weakly coupled, distributed data store library designed for FastAPI applications. It enables multiple independent service instances to form a peer-to-peer network and maintain a shared, eventually consistent state store.
+Meshd (splled as _`mesh-ed`_) is a leaderless, weakly coupled, distributed data store library designed for FastAPI applications. It enables multiple independent service instances to form a peer-to-peer network and maintain a shared, eventually consistent state store.
 
-The library solves the problem of state distribution in decentralized environments without requiring a central database or service. The state distribution works locally at any point of time, propagating over the network of meshd, which means, meshd will also work on partially isolated networks. Mesh uses an append-only operation log and WebSocket-based synchronization to ensure that all locally connected nodes eventually converge on the same data. This repeats over and over until all the nodes in the meshd converges on the same data.
+The library solves the problem of state distribution in decentralized environments without requiring a central database or service. The state distribution works locally at any point of time, propagating over the network of meshd, which means, meshd will also work on partially isolated networks. Meshd uses an append-only operation log and WebSocket-based synchronization to ensure that all locally connected nodes eventually converge on the same data. This repeats over and over until all the nodes in the meshd converges on the same data.
 
-Similar alernatives like `etcd`, `zookeeper` operate on leader based architecture, and require seperate central service to be running and reachable. Mesh is leaderless meaning there is no central service or leader, and is completely distributed. Weak coupling enables the Mesh to be operate in environments with heterogeneous standards. 
+Similar alernatives like `etcd`, `zookeeper` operate on leader based architecture, and require seperate central service to be running and reachable. Meshd is leaderless meaning there is no central service or leader, and is completely distributed. Weak coupling enables the Meshd to be operate in environments with heterogeneous standards. 
 
 
 ## When to use
-Mesh is purpose-built for situations where multiple FastAPI replicas need to agree on a piece of shared state without paying the cost of a centralised store. Consider Mesh when you need any of the following:
+Meshd is purpose-built for situations where multiple FastAPI replicas need to agree on a piece of shared state without paying the cost of a centralised store. Consider Meshd when you need any of the following:
 
 - **Cluster membership registries**: Let each node register its own presence at startup and deregister on shutdown, giving every peer a live view of who is in the cluster.
 - **Shared configuration across replicas**: Propagate runtime configuration flags or feature toggles to all running instances without a restart or a config-server round-trip.
 - **Leaderless coordination**: Implement soft consensus and coordination patterns (such as work-claiming or token passing) where no single node is a single point of failure.
 - **Ad-Hoc Network**: Leaderless Architecture and Local consistency ensures that even in Ad-hoc setup and partially isolated setup, state distribution persists consitently.  
 
-Mesh is intentionally minimal. It does not replace a database for durable storage, and it does not guarantee strong consistency. If your use case requires strict linearisability or persistence across full cluster restarts, a dedicated store is a better fit.
+Meshd is intentionally minimal. It does not replace a database for durable storage, and it does not guarantee strong consistency. If your use case requires strict linearisability or persistence across full cluster restarts, a dedicated store is a better fit.
 
 
 ## How meshd works
-When you create a `Node` and pass it your FastAPI `app`, Mesh automatically registers a `/meshd` WebSocket endpoint on that application. Any other Mesh node in your network can open a persistent connection to that endpoint. 
+When you create a `Node` and pass it your FastAPI `app`, Meshd automatically registers a `/meshd` WebSocket endpoint on that application. Any other Meshd node in your network can open a persistent connection to that endpoint. 
 
 To join an existing cluster, you call `await node.join(["ws://other-host/meshd"])`. This opens an outgoing WebSocket connection to the target node and spawns a background listener task that continuously receives state updates. Once connected, you call `await node.sync_up()` to push your local state to all peers. 
 
-Shared data lives in a **MonotonicDict**, a dictionary-like structure that tracks a commit log alongside its values. When two nodes exchange state, Mesh compares their commit histories to decide whose version is newer, whether one is ahead of the other, or whether the histories have diverged. The `action_on_conflict` parameter you pass to Node controls what happens in the divergent case: `"merge"` combines both sides, `"accept"` adopts the remote state, and `"warn"` or `"exception"` give you manual control. 
+Shared data lives in a **MonotonicDict**, a dictionary-like structure that tracks a commit log alongside its values. When two nodes exchange state, Meshd compares their commit histories to decide whose version is newer, whether one is ahead of the other, or whether the histories have diverged. The `action_on_conflict` parameter you pass to Node controls what happens in the divergent case: `"merge"` combines both sides, `"accept"` adopts the remote state, and `"warn"` or `"exception"` give you manual control. 
 
 You interact with the shared state through three async methods, `put_data()`, `get_data()`, and `pop_data()`, and you can read a plain Python dictionary snapshot at any time via `node.data.to_dict()`.
 
@@ -56,7 +56,7 @@ Installing meshd can be done using a pip install command, through github.
 $ pip install meshd
 ```
 
-Once the package is installed, integrating Mesh into a FastAPI application involves initializing a Node object and wiring it into the FastAPI lifespan handler. This ensures that the node can perform startup tasks (like joining peers) and graceful shutdown tasks (like removing its data from the meshd).
+Once the package is installed, integrating Meshd into a FastAPI application involves initializing a Node object and wiring it into the FastAPI lifespan handler. This ensures that the node can perform startup tasks (like joining peers) and graceful shutdown tasks (like removing its data from the meshd).
 
 ```python
 import socket

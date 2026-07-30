@@ -8,7 +8,7 @@ repo_url: https://github.com/arnavdas88/meshd/
 
 meta:
   - name: keywords
-    content: meshd, meshd, fastapi, mkdocs, distributed system, leaderless, cloud native, quick start
+    content: mesh, meshd, fastapi, mkdocs, distributed system, leaderless, cloud native, quick start
   - name: robots
     content: index, follow
 
@@ -16,14 +16,14 @@ hide:
   - navigation
 ---
 
-# Run a Two-Node Mesh Cluster in Minutes
+# Run a Two-Node Meshd Cluster in Minutes
 
-Connect two FastAPI nodes and synchronize shared state with Mesh in under five minutes. Install, create nodes, join a cluster, and read shared data.
+Connect two FastAPI nodes and synchronize shared state with Meshd in under five minutes. Install, create nodes, join a cluster, and read shared data.
 
-This guide walks you through installing Mesh, wiring it into two FastAPI applications, joining them into a peer-to-peer cluster, and verifying that state syncs correctly across both nodes. By the end you will have a working two-node Mesh cluster running on your local machine.
+This guide walks you through installing Meshd, wiring it into two FastAPI applications, joining them into a peer-to-peer cluster, and verifying that state syncs correctly across both nodes. By the end you will have a working two-node Meshd cluster running on your local machine.
 
-## Install Mesh
-Mesh is now available in in [PyPI](https://pypi.org/project/meshd/).
+## Install Meshd
+Meshd is now available in in [PyPI](https://pypi.org/project/meshd/).
 
 === "uv"
     The recommended method install `meshd` is to use `uv`
@@ -77,7 +77,7 @@ async def push(payload: dict = Body(...)):
     return node.data.to_dict()
 ```
 
-Passing your app instance to Node is all it takes to register the `/meshd` WebSocket endpoint. Mesh handles the rest automatically.
+Passing your app instance to Node is all it takes to register the `/meshd` WebSocket endpoint. Meshd handles the rest automatically.
 
 ## Start a second node and join the cluster
 Create a file called `node_b.py`. Use a lifespan context manager to join `node-a` during startup, sync state, and deregister cleanly on shutdown:
@@ -143,4 +143,4 @@ curl http://localhost:8001/
 # {"__node_b__": {"name": "node-b", "status": "up"}}
 ```
 
-Any write made through `put_data()` on either node propagates to the other automatically. You do not need to poll or manually trigger additional syncs. Mesh pushes state changes to all connected peers as they happen.
+Any write made through `put_data()` on either node propagates to the other automatically. You do not need to poll or manually trigger additional syncs. Meshd pushes state changes to all connected peers as they happen.
