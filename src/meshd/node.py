@@ -28,7 +28,7 @@ logger  = logging.getLogger("Mesh")
 
 class BaseMeshNode:
     """
-    Base abstraction for a distributed mesh node.
+    Base abstraction for a distributed meshd node.
 
     Responsibilities:
     - Manage peer connections
@@ -178,14 +178,14 @@ class BaseMeshNode:
 
 class Node(BaseMeshNode):
     """
-    FastAPI-enabled mesh node.
+    FastAPI-enabled meshd node.
 
     Extends BaseMeshNode by:
     - Registering WebSocket route
     - Accepting inbound connections
     """
 
-    def __init__(self, name=None, app=None, client=None, action_on_conflict="warn", endpoint="/mesh"):
+    def __init__(self, name=None, app=None, client=None, action_on_conflict="warn", endpoint="/meshd"):
         super().__init__(name=name, action_on_conflict=action_on_conflict)
 
         self.app = app
@@ -198,7 +198,7 @@ class Node(BaseMeshNode):
 
     def _register_routes(self):
         """
-        Register `/mesh` websocket endpoint for inbound connections.
+        Register `/meshd` websocket endpoint for inbound connections.
         """
 
         @self.app.websocket(self.endpoint)
@@ -216,7 +216,7 @@ class Node(BaseMeshNode):
                 # Silent disconnect handling (unchanged behavior)
                 pass
     
-        @self.app.get("/mesh-info", tags=["mesh"])
+        @self.app.get("/meshd-info", tags=["meshd"])
         async def get_domain(request: Request):
             # Returns something like "https://example.com" or "http://localhost:8000/"
             base_url = str(request.base_url) 
@@ -237,7 +237,7 @@ class Node(BaseMeshNode):
 
     async def join(self, urls: List[str], token: str = ""):
         """
-        Connect to remote mesh nodes via WebSocket.
+        Connect to remote meshd nodes via WebSocket.
 
         Args:
             urls: List of websocket URLs

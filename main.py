@@ -1,5 +1,5 @@
 def main():
-    print("Hello from mesh!")
+    print("Hello from meshd!")
 
 
 if __name__ == "__main__":

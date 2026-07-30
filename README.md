@@ -1,6 +1,6 @@
 # Mesh - A Distributed Data Structure
 <p align="center">
-    <img src="https://github.com/arnavdas88/mesh/blob/main/docs/assets/illustration-1.png">
+    <img src="https://github.com/arnavdas88/meshd/blob/main/docs/assets/illustration-1.png">
 </p>
 <p align="center">
     Mesh - Distributed Data Structure for FastAPI Servers

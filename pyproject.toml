@@ -29,7 +29,7 @@ version = "2026.0.2" # REQUIRED, although can be dynamic
 # This is a one-line description or tagline of what your project does. This
 # corresponds to the "Summary" metadata field:
 # https://packaging.python.org/specifications/core-metadata/#summary
-description = "A small distributed mesh network package for Fastapi"
+description = "A small distributed meshd network package for Fastapi"
 
 # This should be your name or the name of the organization who originally
 # authored the project, and a valid email address corresponding to the name

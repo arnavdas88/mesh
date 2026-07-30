@@ -326,10 +326,10 @@ async def join(self, urls: List[str], token: str = ""):
     await self.sync_up()
 ```
 
-**Server-Side Connection (/mesh endpoint):**
+**Server-Side Connection (/meshd endpoint):**
 
 ```python
-@self.app.websocket("/mesh")
+@self.app.websocket("/meshd")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     peer = str(websocket.client)

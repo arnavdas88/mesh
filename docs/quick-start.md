@@ -1,14 +1,14 @@
 ---
 title: Quick Start
-description: How to quickly get mesh up and running with your FastApi service
+description: How to quickly get meshd up and running with your FastApi service
 
-repo_name: mesh
+repo_name: meshd
 author: Arnav Das
-repo_url: https://github.com/arnavdas88/mesh/
+repo_url: https://github.com/arnavdas88/meshd/
 
 meta:
   - name: keywords
-    content: mesh, meshd, fastapi, mkdocs, distributed system, leaderless, cloud native, quick start
+    content: meshd, meshd, fastapi, mkdocs, distributed system, leaderless, cloud native, quick start
   - name: robots
     content: index, follow
 
@@ -45,13 +45,13 @@ Mesh is now available in in [PyPI](https://pypi.org/project/meshd/).
 === "Source"
     You can also install it directly from the GitHub repository:
     ```bash
-    $ pip install meshd@git+https://github.com/arnavdas88/mesh.git
+    $ pip install meshd@git+https://github.com/arnavdas88/meshd.git
     ```
 
     Alternatively, clone the repository and install in editable mode - useful if you want to inspect or modify the source alongside your own application code:
 
     ```bash
-    $ git clone https://github.com/arnavdas88/mesh.git
+    $ git clone https://github.com/arnavdas88/meshd.git
     $ cd meshd
     $ pip install -e .
     ```
@@ -77,7 +77,7 @@ async def push(payload: dict = Body(...)):
     return node.data.to_dict()
 ```
 
-Passing your app instance to Node is all it takes to register the `/mesh` WebSocket endpoint. Mesh handles the rest automatically.
+Passing your app instance to Node is all it takes to register the `/meshd` WebSocket endpoint. Mesh handles the rest automatically.
 
 ## Start a second node and join the cluster
 Create a file called `node_b.py`. Use a lifespan context manager to join `node-a` during startup, sync state, and deregister cleanly on shutdown:
@@ -95,7 +95,7 @@ SLEEP = 1
 async def lifespan(app: FastAPI):
     # Startup: wait briefly, then join node-a and sync
     await asyncio.sleep(SLEEP)
-    await node.join(["ws://localhost:8000/mesh"])
+    await node.join(["ws://localhost:8000/meshd"])
     await asyncio.sleep(SLEEP)
 
     await node.sync_up()

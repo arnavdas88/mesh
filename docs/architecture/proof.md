@@ -10,7 +10,7 @@ Let a *node* $n_i$ hold a log $L_i$ and be connected to a set of peers. Define t
 
 ## Theorem (Soundness, Monotonicity, and Eventual Consistency)
 
-Let $\mathcal{N} = \{n_1, n_2, \ldots, n_k\}$ be a set of mesh nodes, each holding a commit log $L_i$, communicating via the `sync_up` / `sync_up_recv` protocol with conflict policy $\pi \in \{\text{accept},\ \text{merge}\}$. Then the following properties hold jointly:
+Let $\mathcal{N} = \{n_1, n_2, \ldots, n_k\}$ be a set of meshd nodes, each holding a commit log $L_i$, communicating via the `sync_up` / `sync_up_recv` protocol with conflict policy $\pi \in \{\text{accept},\ \text{merge}\}$. Then the following properties hold jointly:
 
 
 ### P1 - Append-Only Monotonicity

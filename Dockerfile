@@ -10,9 +10,9 @@ ENV PYTHONUNBUFFERED=1
 # Install uv
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Install mesh
-WORKDIR /mesh
-COPY ./ /mesh
+# Install meshd
+WORKDIR /meshd
+COPY ./ /meshd
 RUN pip install --no-cache-dir --upgrade -e .
 
 # Set working directory inside the container

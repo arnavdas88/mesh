@@ -107,11 +107,11 @@ async def test_callbacks():
 
         fixtures.append(node1_fixture)  
           
-        node2_fixture = node_server("Node2", 9001, ["ws://127.0.0.1:9000/mesh"])  
+        node2_fixture = node_server("Node2", 9001, ["ws://127.0.0.1:9000/meshd"])  
         node2 = await node2_fixture.__anext__()  
         fixtures.append(node2_fixture)
 
-        node3_fixture = node_server("Node3", 9002, ["ws://127.0.0.1:9000/mesh"])  
+        node3_fixture = node_server("Node3", 9002, ["ws://127.0.0.1:9000/meshd"])  
         node3 = await node3_fixture.__anext__()  
         fixtures.append(node3_fixture)  
 
@@ -152,21 +152,21 @@ async def test_partition_merge_and_convergence():
 
         bob_fixture = node_server(
             "Bob", 8001,
-            ["ws://127.0.0.1:8000/mesh"]
+            ["ws://127.0.0.1:8000/meshd"]
         )
         bob = await bob_fixture.__anext__()
         fixtures.append(bob_fixture)
 
         charlie_fixture = node_server(
             "Charlie", 8002,
-            ["ws://127.0.0.1:8000/mesh"]
+            ["ws://127.0.0.1:8000/meshd"]
         )
         charlie = await charlie_fixture.__anext__()
         fixtures.append(charlie_fixture)
 
         dan_fixture = node_server(
             "Dan", 8003,
-            ["ws://127.0.0.1:8000/mesh"]
+            ["ws://127.0.0.1:8000/meshd"]
         )
         dan = await dan_fixture.__anext__()
         fixtures.append(dan_fixture)
@@ -190,21 +190,21 @@ async def test_partition_merge_and_convergence():
 
         fargo_fixture = node_server(
             "Fargo", 8011,
-            ["ws://127.0.0.1:8010/mesh"]
+            ["ws://127.0.0.1:8010/meshd"]
         )
         fargo = await fargo_fixture.__anext__()
         fixtures.append(fargo_fixture)
 
         george_fixture = node_server(
             "George", 8012,
-            ["ws://127.0.0.1:8010/mesh"]
+            ["ws://127.0.0.1:8010/meshd"]
         )
         george = await george_fixture.__anext__()
         fixtures.append(george_fixture)
 
         hannah_fixture = node_server(
             "Hannah", 8013,
-            ["ws://127.0.0.1:8010/mesh"]
+            ["ws://127.0.0.1:8010/meshd"]
         )
         hannah = await hannah_fixture.__anext__()
         fixtures.append(hannah_fixture)
@@ -222,14 +222,14 @@ async def test_partition_merge_and_convergence():
         # BRIDGE THE PARTITIONS
         # -------------------------------------------------
 
-        await alice.join(["ws://127.0.0.1:8010/mesh"])
+        await alice.join(["ws://127.0.0.1:8010/meshd"])
 
         await asyncio.sleep(4)
 
         igor_fixture = node_server(
             "Igor",
             8014,
-            ["ws://127.0.0.1:8010/mesh"]
+            ["ws://127.0.0.1:8010/meshd"]
         )
         igor = await igor_fixture.__anext__()
         fixtures.append(igor_fixture)
@@ -297,7 +297,7 @@ async def test_basic_operations():
 
         fixtures.append(node1_fixture)  
           
-        node2_fixture = node_server("Node2", 7001, ["ws://127.0.0.1:7000/mesh"])  
+        node2_fixture = node_server("Node2", 7001, ["ws://127.0.0.1:7000/meshd"])  
         node2 = await node2_fixture.__anext__()  
         fixtures.append(node2_fixture)
 
@@ -307,7 +307,7 @@ async def test_basic_operations():
         assert await node1.get_data("key") == "value"
         assert await node2.get_data("key") == "value"
 
-        node3_fixture = node_server("Node3", 7002, ["ws://127.0.0.1:7000/mesh"])  
+        node3_fixture = node_server("Node3", 7002, ["ws://127.0.0.1:7000/meshd"])  
         node3 = await node3_fixture.__anext__()  
         fixtures.append(node3_fixture)  
         await asyncio.sleep(5)
