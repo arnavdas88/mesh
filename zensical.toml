@@ -342,17 +342,15 @@ description = """
     find what they're searching for. With your consent, you're helping us to
     make our documentation better.
 """
-
-[project.extra.consent.cookies]
-analytics.name = "Google Analytics"
-checked = false
-
-[project.extra.consent]
 actions = [
     "accept",
     "manage",
     "reject" 
 ]
+
+[project.extra.consent.cookies]
+analytics.name = "Google Analytics"
+checked = false
 
 # ----------------------------------------------------------------------------
 # In this section you can configure the Markdown extensions that are used when
