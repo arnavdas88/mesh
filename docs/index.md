@@ -22,7 +22,7 @@ hide:
 
 # Welcome to Meshd
 
-Meshd (splled as _`mesh-ed`_) is a leaderless, weakly coupled, distributed data store library designed for FastAPI applications. It enables multiple independent service instances to form a peer-to-peer network and maintain a shared, eventually consistent state store.
+Meshd (spelled as _`mesh-ed`_) is a leaderless, weakly coupled, distributed data store library designed for FastAPI applications. It enables multiple independent service instances to form a peer-to-peer network and maintain a shared, eventually consistent state store.
 
 The library solves the problem of state distribution in decentralized environments without requiring a central database or service. The state distribution works locally at any point of time, propagating over the network of meshd, which means, meshd will also work on partially isolated networks. Meshd uses an append-only operation log and WebSocket-based synchronization to ensure that all locally connected nodes eventually converge on the same data. This repeats over and over until all the nodes in the meshd converges on the same data.
 
