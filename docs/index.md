@@ -8,7 +8,7 @@ repo_url: https://github.com/arnavdas88/mesh/
 
 meta:
   - name: keywords
-    content: mesh, fastapi, mkdocs, distributed system, leaderless, cloud native
+    content: mesh, meshd, fastapi, mkdocs, distributed system, leaderless, cloud native
   - name: robots
     content: index, follow
 
@@ -53,7 +53,7 @@ You interact with the shared state through three async methods, `put_data()`, `g
 Installing mesh can be done using a pip install command, through github.
 
 ```bash
-$ pip install git+https://github.com/arnavdas88/mesh.git
+$ pip install meshd
 ```
 
 Once the package is installed, integrating Mesh into a FastAPI application involves initializing a Node object and wiring it into the FastAPI lifespan handler. This ensures that the node can perform startup tasks (like joining peers) and graceful shutdown tasks (like removing its data from the mesh).

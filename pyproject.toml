@@ -29,7 +29,7 @@ version = "2026.0.2" # REQUIRED, although can be dynamic
 # This is a one-line description or tagline of what your project does. This
 # corresponds to the "Summary" metadata field:
 # https://packaging.python.org/specifications/core-metadata/#summary
-description = "A small mesh package for Fastapi"
+description = "A small distributed mesh network package for Fastapi"
 
 # This should be your name or the name of the organization who originally
 # authored the project, and a valid email address corresponding to the name
@@ -75,7 +75,7 @@ requires-python = ">=3.11"
 # Note that this is a list of additional keywords, separated
 # by commas, to be used to assist searching for the distribution in a
 # larger catalog.
-keywords = ["uv", "development", "fastapi", "mesh"]
+keywords = ["uv", "development", "fastapi", "meshd"]
 
 
 # This field lists other packages that your project depends on to run.
@@ -118,19 +118,14 @@ classifiers = [
 # dependencies). Users will be able to install these using the "extras"
 # syntax, for example:
 #
-#   $ pip install mesh[docs]
+#   $ pip install meshd[docs]
 #
 # Optional dependencies the project provides. These are commonly
 # referred to as "extras". For a more extensive definition see:
 # https://packaging.python.org/en/latest/specifications/dependency-specifiers/#extras
 [project.optional-dependencies]
 docs = [
-  "zensical",
-  "mkdocs",
-  "mkdocs-material[imaging]",
-  "mkdocstrings[python]",
-  "mkdocs-autoapi",
-  "pngquant", # For mkdocs Optimize plugin
+    "zensical>=0.0.51",
 ]
 test = [
     "pytest",
@@ -148,10 +143,10 @@ test = [
 # maintainers, and where to support the project financially. The key is
 # what's used to render the link text on PyPI.
 [project.urls]
-Homepage = "https://mesh.iamarnav.com/"
-Documentation = "https://mesh.iamarnav.com/"
-Repository = "https://github.com/arnavdas88/mesh/"
-Issues = "https://github.com/arnavdas88/mesh/issues"
+Homepage = "https://meshd.iamarnav.com/"
+Documentation = "https://meshd.iamarnav.com/"
+Repository = "https://github.com/arnavdas88/meshd/"
+Issues = "https://github.com/arnavdas88/meshd/issues"
 
 [dependency-groups]
 dev = [

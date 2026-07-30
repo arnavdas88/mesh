@@ -8,7 +8,7 @@ repo_url: https://github.com/arnavdas88/mesh/
 
 meta:
   - name: keywords
-    content: mesh, fastapi, mkdocs, distributed system, leaderless, cloud native, quick start
+    content: mesh, meshd, fastapi, mkdocs, distributed system, leaderless, cloud native, quick start
   - name: robots
     content: index, follow
 
@@ -23,19 +23,38 @@ Connect two FastAPI nodes and synchronize shared state with Mesh in under five m
 This guide walks you through installing Mesh, wiring it into two FastAPI applications, joining them into a peer-to-peer cluster, and verifying that state syncs correctly across both nodes. By the end you will have a working two-node Mesh cluster running on your local machine.
 
 ## Install Mesh
-Mesh is not yet published to PyPI. Install it directly from the GitHub repository:
+Mesh is now available in in [PyPI](https://pypi.org/project/meshd/).
 
-```bash
-$ pip install git+https://github.com/arnavdas88/mesh.git
-```
+=== "uv"
+    The recommended method install `meshd` is to use `uv`
+    ```bash
+    $ uv pip install meshd
+    ```
 
-Alternatively, clone the repository and install in editable mode — useful if you want to inspect or modify the source alongside your own application code:
+    Alternatively, you can also add it directly to your project through `uv`
+    ```bash
+    $ uv add meshd
+    ```
 
-```bash
-$ git clone https://github.com/arnavdas88/mesh.git
-$ cd mesh
-$ pip install -e .
-```
+=== "PyPI"
+    Alternatively, you can also install it directly using PyPI:
+    ```bash
+    $ pip install meshd
+    ```
+
+=== "Source"
+    You can also install it directly from the GitHub repository:
+    ```bash
+    $ pip install meshd@git+https://github.com/arnavdas88/mesh.git
+    ```
+
+    Alternatively, clone the repository and install in editable mode - useful if you want to inspect or modify the source alongside your own application code:
+
+    ```bash
+    $ git clone https://github.com/arnavdas88/mesh.git
+    $ cd meshd
+    $ pip install -e .
+    ```
 
 ## Create your first node
 
