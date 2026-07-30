@@ -35,7 +35,7 @@ jobs:
           enable-cache: true
       - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV 
       - name: uv Sync
-        run: uv sync --locked --all-extras --dev
+        run: uv sync --all-extras --dev
       - name: Install the project
         run: uv pip install -r pyproject.toml --all-extras
       - name: Build the documentation
